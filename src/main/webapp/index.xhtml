@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<title>lostNfound</title>
+</h:head>
+<h:outputStylesheet name="css/primeflex.css" />
+<h:body>
+<h:form>
+	<h:outputText value='Enter first number' />
+	<p:inputText value='#{cb.x}' />
+	<h:outputText value='Enter second number' />
+	<p:inputText value='#{cb.y}' />
+	<p:outputLabel value="#{cb.result}"/>
+	<p:commandButton action="#{cb.add}" value="Add" update="@form" />
+</h:form>
+
+</h:body>
+</html>
