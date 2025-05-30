@@ -56,7 +56,7 @@ WebContent/
 │   ├── web.xml
 │   ├── beans.xml
 │   └── faces-config.xml
-├── resources/             # CSS, JS, Images
+├── resources/             # CSS, JS, uploads
 ├── META-INF/
 └── *.xhtml               # JSF Views
 src/
