@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+
+<h:head>
+	<f:metadata>
+		<f:viewAction action="#{itemBean.listItem()}" />
+	</f:metadata>
+</h:head>
+
+<h:body>
+
+	<ui:composition template="/ie_template2.html">
+		<ui:define name="body_title">
+			<strong>Manage Item Entries</strong>
+		</ui:define>
+
+		<ui:define name="body_">
+			<h:form prependId="false" rendered="true">
+				<p:ajaxStatus onstart="PF('status').show()"
+					oncomplete="PF('status').hide()" />
+				<p:dialog widgetVar="status" modal="true" closable="false">
+					<p:graphicImage library="img" name="load4.jpg" />
+				</p:dialog>
+				<p:messages id="global_msg" />
+				<div class="box box-primary">
+					<div class="box-header with-border">
+
+						<p:outputPanel id="viewItem"
+							style="text-align:center;">
+
+							<p:dataTable id="itemList"
+								var="entry" value="#{itemBean.lazyModel}" paginator="true"
+								rows="5" paginatorPosition="bottom"
+								currentPageReportTemplate="Showing {startRecord}-{endRecord} out of {totalRecords}"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rowsPerPageTemplate="5,10,15" selectionMode="single"
+								selection="#{itemBean.entry}" lazy="true"
+								rowKey="#{entry.id}">
+								<f:facet name="header">
+									<hr />
+									<p:spacer></p:spacer>
+									<b></b>
+									<strong>Item</strong> Entries Details </f:facet>
+
+
+								 
+								 <p:column headerText="name"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.name==null} " />
+									<h:outputText value="#{entry.name}"/>
+								</p:column> 
+								 <p:column headerText="category"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.category==null} " />
+									<h:outputText value="#{entry.category}"/>
+								</p:column> 
+								 <p:column headerText="location"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.location==null} " />
+									<h:outputText value="#{entry.location}"/>
+								</p:column> 
+								 <p:column
+									headerText="dateReported" style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.dateReported==null} " />
+									<h:outputText value="#{entry.dateReported}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+									</h:outputText>
+								</p:column>  
+								 <p:column
+									headerText="dateClaimed" style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.dateClaimed==null} " />
+									<h:outputText value="#{entry.dateClaimed}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+									</h:outputText>
+								</p:column>  
+								 <p:column headerText="itemType"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.itemType==null} " />
+									<h:outputText value="#{entry.itemType}"/>
+								</p:column> 
+								 <p:column headerText="itemStatus"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.itemStatus==null} " />
+									<h:outputText value="#{entry.itemStatus}"/>
+								</p:column>
+								<p:column headerText="">
+									<p:menuButton value="Action">
+										<p:menuitem value="Edit" icon="ui-icon-arrowrefresh-1-w"
+											style="font-size:1em!important;" process="@this"
+											actionListener="#{itemBean.displayItemDialog(entry)}"
+									update="itemView,global_msg"
+											immediate="true"
+											oncomplete="PF('itemDialog').show()">
+											<p:resetInput target="itemView" />
+										</p:menuitem>
+								</p:menuButton>
+								</p:column>
+							</p:dataTable>
+							<p:commandButton id="submitButton" immediate="true"
+								rendered="true" action="#{itemBean.createNewItemView}"
+								oncomplete="PF('itemDialog').show()"
+								update="itemView,global_msg"
+								value="Create New Item">
+								<p:resetInput target="itemView" />
+							</p:commandButton>
+
+						</p:outputPanel>
+					</div>
+				</div>
+
+
+				<p:dialog header="Item"
+					widgetVar="itemDialog"
+					id="itemDialog" modal="true"
+					showEffect="fade" hideEffect="fade" resizable="true">
+
+					<p:outputPanel id="itemView"
+						style="text-align:center;">
+						<p:messages id="view_equip" severity="info,error"
+							globalOnly="true" />
+						<p:panelGrid columns="3" id="grid3" rendered="#{not empty itemBean.entry}">
+							<f:facet name="header">
+								<p:graphicImage name="img/user_groups_admin.png" /> #{itemBean.entry.id}
+							</f:facet>
+
+							   <p:outputLabel
+								for="name" value="name:" /> <p:inputText id="name" value="#{itemBean.entry.name}" required="true"
+								requiredMessage="name must be supplied" size="70">
+							</p:inputText> <p:message id="m_name" for="name" />   <p:outputLabel
+								for="category" value="category:" /> <p:inputText id="category" value="#{itemBean.entry.category}" required="true"
+								requiredMessage="category must be supplied" size="70">
+							</p:inputText> <p:message id="m_category" for="category" />   <p:outputLabel
+								for="location" value="location:" /> <p:inputText id="location" value="#{itemBean.entry.location}" required="true"
+								requiredMessage="location must be supplied" size="70">
+							</p:inputText> <p:message id="m_location" for="location" />  
+							<p:outputLabel for="dateReported" value="dateReported:" /> <p:calendar
+								title="dateReported" id="dateReported" required="true" pattern="dd-MM-yyyy"
+								navigator="true" yearRange="c-120:c" value="#{itemBean.entry.dateReported}"
+								requiredMessage="dateReported must be supplied"
+								size="70">
+								<p:tooltip id="tp_dateReported" for="dateReported" showEvent="focus"
+									hideEvent="blur" position="top" />
+							</p:calendar> <p:message id="m_dateReported" for="dateReported" />   
+							<p:outputLabel for="dateClaimed" value="dateClaimed:" /> <p:calendar
+								title="dateClaimed" id="dateClaimed" required="true" pattern="dd-MM-yyyy"
+								navigator="true" yearRange="c-120:c" value="#{itemBean.entry.dateClaimed}"
+								requiredMessage="dateClaimed must be supplied"
+								size="70">
+								<p:tooltip id="tp_dateClaimed" for="dateClaimed" showEvent="focus"
+									hideEvent="blur" position="top" />
+							</p:calendar> <p:message id="m_dateClaimed" for="dateClaimed" />    <p:outputLabel
+								for="itemType" value="itemType:" /> <p:inputText id="itemType" value="#{itemBean.entry.itemType}" required="true"
+								requiredMessage="itemType must be supplied" size="70">
+							</p:inputText> <p:message id="m_itemType" for="itemType" />   <p:outputLabel
+								for="itemStatus" value="itemStatus:" /> <p:inputText id="itemStatus" value="#{itemBean.entry.itemStatus}" required="true"
+								requiredMessage="itemStatus must be supplied" size="70">
+							</p:inputText> <p:message id="m_itemStatus" for="itemStatus" />
+
+							<p:commandButton rendered="#{itemBean.entry.id==null}"
+								id="submitButton2" ajax="true"
+								process="itemView"
+								actionListener="#{itemBean.createItem}"
+								value="Create Item"
+								update="itemView,global_msg" />
+
+							<p:commandButton rendered="#{itemBean.entry.id!=null}"
+								id="submitButton3" ajax="true"
+								process="itemView"
+								actionListener="#{itemBean.updateItem}"
+								value="Update Item"
+								update="itemView,global_msg" />
+							<p:spacer />
+							<p:spacer />
+
+						</p:panelGrid>
+					</p:outputPanel>
+
+				</p:dialog>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+
+</html>
