@@ -69,20 +69,20 @@ public class viewBean implements Serializable {
 
 	}
 
-	public void markFound(Item e) {
-		System.out.println("claiming.....");
-		this.entry = e;
+	public void markFound() {
+		System.out.println("claiming....."+entry.getName());
 		this.entry.setItemStatus(ItemStatus.RESOLVED);
-		this.entry.setItemType(ItemType.FOUND);
+		this.entry.setItemType(ItemType.CLAIMED);
 		this.entry.setDateClaimed(new Date());
 		itemService.updateItem(this.entry);
+		System.out.println("claimed.");
 		Messages.addFlashGlobalInfo(this.entry.getName() + "has been claimed ");
 		try {
 			Faces.redirect(VIEW_URL);
 		} catch (IOException ex) {
 			Messages.addFlashGlobalInfo(this.entry.getName() + "claim failed ");
 			ex.printStackTrace();
-		}
+		} 
 
 	}
 

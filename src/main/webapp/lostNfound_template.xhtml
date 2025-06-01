@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<f:view contentType="text/html">
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost and Found System - CSC 335</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2em;
+            color: #ecf0f1;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #34495e;
+            color: #ecf0f1;
+            border-left: 3px solid #3498db;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 10px;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background-color: white;
+            padding: 12px 30px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #7f8c8d;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .course-info {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .course-code {
+            color: #3498db;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .course-title {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .project-section {
+            margin-bottom: 25px;
+        }
+
+        .project-section h3 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .project-section p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .tech-stack {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .team-members {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        .team-members h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .member-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .member-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .member-id {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .member-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<h:head></h:head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Lost &amp; Found System</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/lostNfound/lostNfound_template.xhtml" class="active">Dashboard</a></li>
+                <li><a href="/lostNfound/view2.xhtml">LostNFound</a></li>
+                <li><a href="/lostNfound/list.xhtml">Admin/Management</a></li>
+                <li><a href="/lostNfound/lostNfound_template.xhtml#team">Group Members</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="nav-title">CSC 335 Software Engineering Project</div>
+                <div class="nav-links">
+                    <a href="/lostNfound/lostNfound_template.xhtml">Dashboard</a>
+                    <a href="/lostNfound/view2.xhtml">App</a>
+                    <a href="/lostNfound/list.xhtml">Admin</a>
+                    <a href="/lostNfound/lostNfound_template.xhtml#team">Team</a>
+                </div>
+            </div>
+
+            <!-- Page Content Area -->
+            <ui:insert name="content">
+                <!-- Default Dashboard Content -->
+                <div class="dashboard-content">
+                    <div class="course-info">
+                        <div class="course-code">CSC 335</div>
+                        <h1 class="course-title">Software Engineering</h1>
+                    </div>
+
+                    <div class="project-section">
+                        <h3>Project Description</h3>
+                        <p>A web-based lost and found management system for educational institutions built with JSF, PrimeFaces, and EJB. This application enables students to report lost items, upload found items with photos, and browse through available items with comprehensive search functionality.</p>
+                    </div>
+
+                    <div class="project-section">
+                        <h3>Project Motivation</h3>
+                        <p>Educational institutions often struggle with managing lost and found items efficiently. Traditional paper-based systems are prone to errors and difficult to manage. Our digital solution provides a centralized platform where students can easily report and search for lost items, while administrators can efficiently manage the entire process.</p>
+                        <p>This system reduces the time spent searching for lost items and increases the likelihood of successful item recovery, creating a more organized and helpful campus environment.</p>
+                    </div>
+
+                    <div class="tech-stack">
+                        <h3>Technology Stack</h3>
+                        <p><strong>Frontend:</strong> JSF 2.2, PrimeFaces 8.0</p>
+                        <p><strong>Backend:</strong> Java EE 7, EJB 3.2</p>
+                        <p><strong>Dependency Injection:</strong> CDI 1.2</p>
+                        <p><strong>Server:</strong> Apache TomEE Plume 7.1.2</p>
+                        <p><strong>Database:</strong> JPA/OpenJPA with H2 for development</p>
+                    </div>
+
+                    <div class="project-section">
+                        <h3>Key Features</h3>
+                        <p>• View reported lost or found items in a user-friendly grid layout</p>
+                        <p>• Advanced search functionality with keyword filtering</p>
+                        <p>• Easy item reporting system for both lost and found items</p>
+                        <p>• Administrative interface for item approval and rejection</p>
+                        <p>• Image upload and preview capabilities</p>
+                        <p>• Clean, responsive UI design with modern web standards</p>
+                    </div>
+
+                    <div class="team-members">
+                        <h3>Group Members</h3>
+                        <div class="member-list">
+                            <div class="member-item">
+                                <div class="member-name">Akintunde Abdulsalam</div>
+                                <div class="member-id">E047451</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Abdulganiyu Abdulrahmon Demola</div>
+                                <div class="member-id">E047370</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Adiamo Sodiq</div>
+                                <div class="member-id">E046135</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Anetekhai Daniel Oluwaseyi</div>
+                                <div class="member-id">E045437</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Olaniyi Saheed Olalekan</div>
+                                <div class="member-id">E047502</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Oduah Nkem Oluwatoyin</div>
+                                <div class="member-id">E048166</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Oluremi Akorede</div>
+                                <div class="member-id">E045745</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Oginni Oluwafemi</div>
+                                <div class="member-id">E045939</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Ohiremen Emmanuel Osirama</div>
+                                <div class="member-id">E046070</div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-name">Yusuf Basit</div>
+                                <div class="member-id">E046253</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ui:insert>
+        </main>
+    </div>
+</body>
+</f:view>
+</html>

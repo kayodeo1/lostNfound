@@ -12,18 +12,17 @@
 
 <h:head>
 	<f:metadata>
-		<f:viewAction action="#{itemBean.listItem()}" />
+		<f:viewAction action="#{viewBean.listItem()}" />
 	</f:metadata>
 </h:head>
 
 <h:body>
 
-	<ui:composition template="/ie_template2.html">
-		<ui:define name="body_title">
-			<strong>Manage Item Entries</strong>
-		</ui:define>
+	<ui:composition template="/lostNfound_template.xhtml">
 
-		<ui:define name="body_">
+		<ui:define name="content">
+			<strong>Manage Item Entries</strong>
+		
 			<h:form prependId="false" rendered="true">
 				<p:ajaxStatus onstart="PF('status').show()"
 					oncomplete="PF('status').hide()" />
@@ -37,12 +36,12 @@
 						<p:outputPanel id="viewItem" style="text-align:center;">
 
 							<p:dataTable id="itemList" var="entry"
-								value="#{itemBean.lazyModel}" paginator="true" rows="5"
+								value="#{viewBean.lazyModel}" paginator="true" rows="5"
 								paginatorPosition="bottom"
 								currentPageReportTemplate="Showing {startRecord}-{endRecord} out of {totalRecords}"
 								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 								rowsPerPageTemplate="5,10,15" selectionMode="single"
-								selection="#{itemBean.entry}" lazy="true" rowKey="#{entry.id}">
+								selection="#{viewBean.entry}" lazy="true" rowKey="#{entry.id}">
 								<f:facet name="header">
 									<hr />
 									<p:spacer></p:spacer>
@@ -104,10 +103,10 @@
 
 
 				<p:dialog widgetVar="itemDialog" width="70%" height="70vh"
-					id="itemView" resizable="true" onHide="#{viewBean.clear()}"
+					id="itemView" resizable="true" 
 					modal="true" showEffect="fade" hideEffect="fade"
 					style="background: rgba(255,255,255,0.98); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: none;">
-					<h:form>
+					
 					<f:facet name="header">
 						<div
 							style="display: flex; align-items: center; justify-content: center; padding: 20px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0; margin: -20px -20px 20px -20px;">
@@ -280,14 +279,14 @@
 					<div
 						style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding: 20px 0; border-top: 1px solid #e2e8f0;">
 						<p:commandButton value="❌ Close"
-							onclick="PF('details').hide(); return false;"
+							onclick="PF('itemDialog').hide(); return false;"
 							style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);" />
 
-						<p:commandButton value="Mark as claimed" process="@this"
-							actionListener="#{viewBean.markFound(entry)}" immediate="true"
+						<p:commandButton value="Mark as claimed #{viewBean.entry.name}" process="@form"
+							actionListener="#{viewBean.markFound()}" immediate="true"
 							style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);" />
 					</div>
-			</h:form>
+		
 
 			</p:dialog>
 

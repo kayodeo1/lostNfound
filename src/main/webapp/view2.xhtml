@@ -15,32 +15,33 @@
 		<f:viewAction action="#{viewBean.listItem()}" />
 	</f:metadata>
 </h:head>
+
 <h:body
 	style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px;">
 
-	<ui:composition template="/ie_template2.html">
+	<ui:composition template="/lostNfound_template.xhtml">
 
-		<ui:define name="body_" style="width:100vw;">
+		<ui:define name="content" style="width:80vw;">
 			<f:facet name="header" id="notification_header">
 				<p:messages id="global_message" globalOnly="true"
-					style="width:96vw; background: rgba(255,255,255,0.9); border-radius: 8px; margin-bottom: 15px;" />
+					style="width:70vw; background: rgba(255,255,255,0.9); border-radius: 8px; margin-bottom: 15px;" />
 			</f:facet>
 			<p:panelGrid columns="1" style="width:100%">
-					<p:commandButton value="+ Report Item"
-						style="float:right; background: #fff; color: #667eea; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 10px rgba(0,0,0,0.2);"
-						immediate="true" rendered="true"
-						action="#{viewBean.createNewItemView}"
-						oncomplete="PF('itemDialog').show()"
-						update="itemDialog,global_message">
-					</p:commandButton>
-				
+				<p:commandButton value="+ Report Item"
+					style="float:right; background: #fff; color: #667eea; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 10px rgba(0,0,0,0.2);"
+					immediate="true" rendered="true"
+					action="#{viewBean.createNewItemView}"
+					oncomplete="PF('itemDialog').show()"
+					update="itemDialog,global_message">
+				</p:commandButton>
+
 				<p:tabView
 					style="background: rgba(255,255,255,0.95); border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); overflow: hidden;margin-top:1em;">
 					<p:tab id="found_tab" title="📋 Reported Found Items"
 						style="width:100%;">
 
 						<div class="datagrid-container"
-							style="position: fixed; width: 85%; margin-left: 0em; margin-top: -1em; height: 500px; overflow-y: auto; overflow-x: hidden; border: 2px solid #e1e8f0; border-radius: 12px; background: #fafbfc;">
+							style="position: fixed;width:75vw; max-width: 75vw; margin-left: 0em; margin-top: -1em; height: 450px; overflow-y: auto; overflow-x: hidden; border: 2px solid #e1e8f0; border-radius: 12px; background: #fafbfc;">
 
 							<p:dataGrid var="entry" value="#{viewBean.lazyModel1}"
 								columns="3" layout="grid" rows="6" paginator="true" id="found"
@@ -53,10 +54,10 @@
 								</f:facet>
 
 								<div class="category-card"
-									style="height: 350px; margin: 1.5em; background: #fff; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+									style="height: 350px; margin: 1em; background: #fff; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
 									<h:form>
 										<div class="category-content"
-											style="height: 280px; margin: 1.5em; background: #fff; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e2e8f0; position: relative; overflow: hidden; padding: 15px; display: flex; flex-direction: column;">
+											style="height: 320px; margin: 1.5em; background: #fff; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e2e8f0; position: relative; overflow: hidden; padding: 15px; display: flex; flex-direction: column;">
 											<h3 class="category-title"
 												style="text-align: center; margin: 0 0 12px 0; color: #2d3748; font-size: 1.1em; font-weight: 600; line-height: 1.3;">#{entry.name}</h3>
 
@@ -83,7 +84,7 @@
 											</div>
 
 											<p:inputTextarea rows="2"
-												style="width:100%; border:1px solid #e2e8f0; border-radius: 8px; padding: 8px; font-size: 0.9em; background: #f7fafc; resize: none; margin-bottom: 12px;"
+												style="width:100%; border:1px solid #e2e8f0; border-radius: 8px; padding: 10px; font-size: 0.9em; background: #f7fafc; resize: none; margin-bottom: 12px;"
 												readonly="true" value="#{entry.description}"></p:inputTextarea>
 
 											<p:commandButton value="👁️ View Details"
@@ -115,7 +116,7 @@
 					<p:tab id="lost_tab" title="🔍 Reported Lost Items">
 
 						<div class="datagrid-container"
-							style="position: fixed; width: 85%; margin-left: 0em; margin-top: -1em; height: 500px; overflow-y: auto; overflow-x: hidden; border: 2px solid #e1e8f0; border-radius: 12px; background: #fafbfc;">
+							style="position: fixed;width:75vw; max-width: 75vw; margin-left: 0em; margin-top: -1em; height: 450px; overflow-y: auto; overflow-x: hidden; border: 2px solid #e1e8f0; border-radius: 12px; background: #fafbfc;">
 
 							<p:dataGrid var="entry" value="#{viewBean.lazyModel2}"
 								columns="3" layout="grid" rows="6" paginator="true" id="lost"
@@ -128,7 +129,7 @@
 								</f:facet>
 								<h:form>
 									<div class="category-content"
-										style="height: 280px; margin: 1.5em; background: #fff; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e2e8f0; position: relative; overflow: hidden; padding: 15px; display: flex; flex-direction: column;">
+										style="height: 350px; margin: 1.5em; background: #fff; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e2e8f0; position: relative; overflow: hidden; padding: 15px; display: flex; flex-direction: column;">
 										<h3 class="category-title"
 											style="text-align: center; margin: 0 0 12px 0; color: #2d3748; font-size: 1.1em; font-weight: 600; line-height: 1.3;">#{entry.name}</h3>
 
@@ -183,431 +184,426 @@
 							</p:dataGrid>
 
 						</div>
+
 					</p:tab>
 
 				</p:tabView>
 			</p:panelGrid>
 
-			<p:dialog header="📝 Report Item" widgetVar="itemDialog"
-				id="itemDialog" modal="true" showEffect="fade" hideEffect="fade"
-				resizable="true"
-				style="background: rgba(255,255,255,0.98); border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
 
-				<p:tabView style="background: transparent;">
-					<p:tab id="report-found" title="✅ Found Item" style="width:100%">
-						<h:form enctype="multipart/form-data" id="itemView">
+		<p:dialog header="📝 Report Item" widgetVar="itemDialog" width="70%" height="70vh"
+			id="itemDialog" modal="true" showEffect="fade" hideEffect="fade"
+			resizable="true"
+			style="background: rgba(255,255,255,0.98); border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
 
-							<p:outputPanel id="itemView3" style="text-align:center;">
-								<p:messages id="view_equip" severity="info,error"
-									globalOnly="true"
-									style="margin-bottom: 15px; padding: 10px; border-radius: 8px;" />
-								<p:panelGrid columns="3" id="grid32"
-									rendered="#{not empty viewBean.entry}"
-									style="width: 100%; background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
-									<f:facet name="header">
-										<div
-											style="display: flex; align-items: center; justify-content: center; padding: 15px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border-radius: 10px; margin-bottom: 15px;">
-											<p:graphicImage name="img/user_groups_admin.png"
-												style="margin-right: 10px;" />
-											<span style="font-size: 1.1em; font-weight: 600;">Item
-												##{viewBean.entry.id}</span>
-										</div>
-									</f:facet>
+			<p:tabView style="background: transparent;">
+				<p:tab id="report-found" title="✅ Found Item" style="width:100%">
+					<h:form enctype="multipart/form-data" id="itemView">
 
-									<p:outputLabel for="name" value="Name:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="name" value="#{viewBean.entry.name}"
-										required="true" requiredMessage="name must be supplied"
-										size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_name" for="name"
-										style="color: #e53e3e; font-size: 0.9em;" />
+						<p:outputPanel id="itemView3" style="text-align:center;">
+							<p:messages id="view_equip" severity="info,error"
+								globalOnly="true"
+								style="margin-bottom: 15px; padding: 10px; border-radius: 8px;" />
+							<p:panelGrid columns="3" id="grid32"
+								rendered="#{not empty viewBean.entry}"
+								style="width: 100%; background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
+								<f:facet name="header">
+									<div
+										style="display: flex; align-items: center; justify-content: center; padding: 15px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border-radius: 10px; margin-bottom: 15px;">
+										<p:graphicImage name="img/user_groups_admin.png"
+											style="margin-right: 10px;" />
+										<span style="font-size: 1.1em; font-weight: 600;">Item
+											Details</span>
+									</div>
+								</f:facet>
 
-									<p:outputLabel for="category" value="Category:"
-										style="font-weight: 600; color: #2d3748;" />
-									<h:selectOneMenu value="#{viewBean.entry.category}"
-										id="category"
-										style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; background: white;">
-										<f:selectItems value="#{viewBean.categories}" />
-										<f:ajax />
-									</h:selectOneMenu>
-									<p:message id="m_category" for="category"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="name" value="Name:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="name" value="#{viewBean.entry.name}"
+									required="true" requiredMessage="name must be supplied"
+									size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_name" for="name"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="desc" value="Description:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="desc" value="#{viewBean.entry.description}"
-										required="true" requiredMessage="description must be supplied"
-										size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_desc" for="desc"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="category" value="Category:"
+									style="font-weight: 600; color: #2d3748;" />
+								<h:selectOneMenu value="#{viewBean.entry.category}"
+									id="category"
+									style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; background: white;">
+									<f:selectItems value="#{viewBean.categories}" />
+									<f:ajax />
+								</h:selectOneMenu>
+								<p:message id="m_category" for="category"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="location" value="Location:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="location" value="#{viewBean.entry.location}"
-										required="true" requiredMessage="location must be supplied"
-										size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_location" for="location"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="desc" value="Description:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="desc" value="#{viewBean.entry.description}"
+									required="true" requiredMessage="description must be supplied"
+									size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_desc" for="desc"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="dateReported" value="Date Found:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:calendar title="date found" id="dateReported"
-										required="true" pattern="yyyy-MM-dd" navigator="true"
-										yearRange="c-120:c" value="#{viewBean.entry.dateReported}"
-										requiredMessage="dateReported must be supplied" size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
-										<p:tooltip id="tp_dateReported" for="dateReported"
-											showEvent="focus" hideEvent="blur" position="top" />
-									</p:calendar>
-									<p:message id="m_dateReported" for="dateReported"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="location" value="Location:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="location" value="#{viewBean.entry.location}"
+									required="true" requiredMessage="location must be supplied"
+									size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_location" for="location"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="contact" value="Phone Number:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="contact" value="#{viewBean.entry.contacts}"
-										required="true"
-										requiredMessage="your phone number must be supplied" size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_contact" for="contact"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="dateReported" value="Date Found:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:calendar title="date found" id="dateReported" required="true"
+									pattern="yyyy-MM-dd" navigator="true" yearRange="c-120:c"
+									value="#{viewBean.entry.dateReported}"
+									requiredMessage="dateReported must be supplied" size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
+									<p:tooltip id="tp_dateReported" for="dateReported"
+										showEvent="focus" hideEvent="blur" position="top" />
+								</p:calendar>
+								<p:message id="m_dateReported" for="dateReported"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<h:outputLabel value="📎 Select File"
-										style="font-weight: 600; display: block; margin-bottom: 5px; color: #2d3748;" />
-									<p:fileUpload id="media" mode="advanced" auto="true"
-										allowTypes="/(\.|\/)(gif|jpe?g|png|mp4|mov|wmv|avi|mkv|webm)$/"
-										accept="image/jpeg,image/png,image/gif,video/*,.mp4,.mov,.wmv,.avi,.mkv"
-										widgetVar="mediaWidget1" sizeLimit="20971520"
-										invalidSizeMessage="File is too large. Maximum size is 20MB."
-										fileUploadListener="#{viewBean.handleFileUpload}"
-										invalidFileMessage="Only image and video files (JPEG, PNG, GIF,mp4,mov...) are allowed."
-										style="width: 100%; margin-bottom: 2px; border: 2px dashed #cbd5e0; border-radius: 10px; padding: 20px; background: #f7fafc;"
-										update="mediaMessage">
-										<p:tooltip for="media"
-											value="Upload media for content max 20MB(image/video)">
-										</p:tooltip>
-									</p:fileUpload>
-									<p:message for="media" id="mediaMessage" display="text"
-										style="color: #e53e3e; font-size: 14px;" />
+								<p:outputLabel for="contact" value="Phone Number:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="contact" value="#{viewBean.entry.contacts}"
+									required="true"
+									requiredMessage="your phone number must be supplied" size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_contact" for="contact"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:commandButton rendered="#{viewBean.entry.id==null}"
-										id="submitButton22" ajax="true" process="itemView"
-										actionListener="#{viewBean.found}" value="📋 Report Found"
-										update="@form"
-										style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);" />
+								<h:outputLabel value="📎 Select File"
+									style="font-weight: 600; display: block; margin-bottom: 5px; color: #2d3748;" />
+								<p:fileUpload id="media" mode="advanced" auto="true"
+									allowTypes="/(\.|\/)(gif|jpe?g|png|mp4|mov|wmv|avi|mkv|webm)$/"
+									accept="image/jpeg,image/png,image/gif,video/*,.mp4,.mov,.wmv,.avi,.mkv"
+									widgetVar="mediaWidget1" sizeLimit="20971520"
+									invalidSizeMessage="File is too large. Maximum size is 20MB."
+									fileUploadListener="#{viewBean.handleFileUpload}"
+									invalidFileMessage="Only image and video files (JPEG, PNG, GIF,mp4,mov...) are allowed."
+									style="width: 100%; margin-bottom: 2px; border: 2px dashed #cbd5e0; border-radius: 10px; padding: 20px; background: #f7fafc;"
+									update="mediaMessage">
+									<p:tooltip for="media"
+										value="Upload media for content max 20MB(image/video)">
+									</p:tooltip>
+								</p:fileUpload>
+								<p:message for="media" id="mediaMessage" display="text"
+									style="color: #e53e3e; font-size: 14px;" />
 
-								</p:panelGrid>
-							</p:outputPanel>
-						</h:form>
-					</p:tab>
-					<p:tab id="report-lost" title="❌ Lost Items" style="width:100%">
-						<h:form enctype="multipart/form-data" id="itemView2">
+								<p:commandButton rendered="#{viewBean.entry.id==null}"
+									id="submitButton22" ajax="true" process="itemView"
+									actionListener="#{viewBean.found}" value="📋 Report Found"
+									update="@form"
+									style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);" />
 
-							<p:outputPanel style="text-align:center;">
-								<p:messages id="view_equip2" severity="info,error"
-									globalOnly="true"
-									style="margin-bottom: 15px; padding: 10px; border-radius: 8px;" />
-								<p:panelGrid columns="3" id="grid3"
-									rendered="#{not empty viewBean.entry}"
-									style="width: 100%; background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
-									<f:facet name="header">
-										<div
-											style="display: flex; align-items: center; justify-content: center; padding: 15px; background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; border-radius: 10px; margin-bottom: 15px;">
-											<p:graphicImage name="img/user_groups_admin.png"
-												style="margin-right: 10px;" />
-											<span style="font-size: 1.1em; font-weight: 600;">Item
-												##{viewBean.entry.id}</span>
-										</div>
-									</f:facet>
+							</p:panelGrid>
+						</p:outputPanel>
+					</h:form>
+				</p:tab>
+				<p:tab id="report-lost" title="❌ Lost Items" width="70%" height="70vh">
+					<h:form enctype="multipart/form-data" id="itemView2">
 
-									<p:outputLabel for="name2" value="Name:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="name2" value="#{viewBean.entry.name}"
-										required="true" requiredMessage="name must be supplied"
-										size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_name2" for="name2"
-										style="color: #e53e3e; font-size: 0.9em;" />
+						<p:outputPanel style="text-align:center;">
+							<p:messages id="view_equip2" severity="info,error"
+								globalOnly="true"
+								style="margin-bottom: 15px; padding: 10px; border-radius: 8px;" />
+							<p:panelGrid columns="3" id="grid3"
+								rendered="#{not empty viewBean.entry}"
+								style="width: 100%; background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
+								<f:facet name="header">
+									<div
+										style="display: flex; align-items: center; justify-content: center; padding: 15px; background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; border-radius: 10px; margin-bottom: 15px;">
+										<p:graphicImage name="img/user_groups_admin.png"
+											style="margin-right: 10px;" />
+										<span style="font-size: 1.1em; font-weight: 600;">Item
+											Details</span>
+									</div>
+								</f:facet>
 
-									<p:outputLabel for="category2" value="Category:"
-										style="font-weight: 600; color: #2d3748;" />
-									<h:selectOneMenu value="#{viewBean.entry.category}"
-										id="category2"
-										style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; background: white;">
-										<f:selectItems value="#{viewBean.categories}" />
-										<f:ajax />
-									</h:selectOneMenu>
-									<p:message id="m_category2" for="category2"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="name2" value="Name:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="name2" value="#{viewBean.entry.name}"
+									required="true" requiredMessage="name must be supplied"
+									size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_name2" for="name2"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="desc2" value="Description:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="desc2" value="#{viewBean.entry.description}"
-										required="true" requiredMessage="description must be supplied"
-										size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_desc2" for="desc2"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="category2" value="Category:"
+									style="font-weight: 600; color: #2d3748;" />
+								<h:selectOneMenu value="#{viewBean.entry.category}"
+									id="category2"
+									style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; background: white;">
+									<f:selectItems value="#{viewBean.categories}" />
+									<f:ajax />
+								</h:selectOneMenu>
+								<p:message id="m_category2" for="category2"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="location2" value="Location:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="location2" value="#{viewBean.entry.location}"
-										required="true" requiredMessage="location must be supplied"
-										size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_location2" for="location2"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="desc2" value="Description:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="desc2" value="#{viewBean.entry.description}"
+									required="true" requiredMessage="description must be supplied"
+									size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_desc2" for="desc2"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="dateReported2" value="Date Lost:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:calendar title="date lost" id="dateReported2"
-										required="true" pattern="dd-MM-yyyy" navigator="true"
-										yearRange="c-120:c" value="#{viewBean.entry.dateReported}"
-										requiredMessage="dateReported must be supplied" size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
-										<p:tooltip id="tp_dateReported2" for="dateReported2"
-											showEvent="focus" hideEvent="blur" position="top" />
-									</p:calendar>
-									<p:message id="m_dateReported2" for="dateReported2"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="location2" value="Location:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="location2" value="#{viewBean.entry.location}"
+									required="true" requiredMessage="location must be supplied"
+									size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_location2" for="location2"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:outputLabel for="contact2" value="Phone Number:"
-										style="font-weight: 600; color: #2d3748;" />
-									<p:inputText id="contact2" value="#{viewBean.entry.contacts}"
-										required="true"
-										requiredMessage="your phone number must be supplied" size="70"
-										style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-									</p:inputText>
-									<p:message id="m_contact2" for="contact2"
-										style="color: #e53e3e; font-size: 0.9em;" />
+								<p:outputLabel for="dateReported2" value="Date Lost:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:calendar title="date lost" id="dateReported2" required="true"
+									pattern="dd-MM-yyyy" navigator="true" yearRange="c-120:c"
+									value="#{viewBean.entry.dateReported}"
+									requiredMessage="dateReported must be supplied" size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
+									<p:tooltip id="tp_dateReported2" for="dateReported2"
+										showEvent="focus" hideEvent="blur" position="top" />
+								</p:calendar>
+								<p:message id="m_dateReported2" for="dateReported2"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<h:outputLabel value="📎 Select File (if available)"
-										style="font-weight: 600; display: block; margin-bottom: 5px; color: #2d3748;" />
-									<p:fileUpload id="media2" mode="advanced" auto="true"
-										allowTypes="/(\.|\/)(gif|jpe?g|png|mp4|mov|wmv|avi|mkv|webm)$/"
-										accept="image/jpeg,image/png,image/gif,video/*,.mp4,.mov,.wmv,.avi,.mkv"
-										widgetVar="mediaWidget2" sizeLimit="20971520"
-										invalidSizeMessage="File is too large. Maximum size is 20MB."
-										fileUploadListener="#{viewBean.handleFileUpload2}"
-										invalidFileMessage="Only image and video files (JPEG, PNG, GIF,mp4,mov...) are allowed."
-										style="width: 100%; margin-bottom: 2px; border: 2px dashed #cbd5e0; border-radius: 10px; padding: 20px; background: #f7fafc;">
-										<p:tooltip for="media2"
-											value="Upload media for content max 20MB(image/video)">
-										</p:tooltip>
-									</p:fileUpload>
-									<p:message for="media2" id="mediaMessage2" display="text"
-										style="color: #e53e3e; font-size: 14px;" />
+								<p:outputLabel for="contact2" value="Phone Number:"
+									style="font-weight: 600; color: #2d3748;" />
+								<p:inputText id="contact2" value="#{viewBean.entry.contacts}"
+									required="true"
+									requiredMessage="your phone number must be supplied" size="70"
+									style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
+								</p:inputText>
+								<p:message id="m_contact2" for="contact2"
+									style="color: #e53e3e; font-size: 0.9em;" />
 
-									<p:commandButton rendered="#{viewBean.entry.id==null}"
-										id="submitButton2" ajax="true" process="itemView2"
-										actionListener="#{viewBean.lost}" value="📋 Report Lost"
-										update="@form"
-										style="background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);" />
+								<h:outputLabel value="📎 Select File (if available)"
+									style="font-weight: 600; display: block; margin-bottom: 5px; color: #2d3748;" />
+								<p:fileUpload id="media2" mode="advanced" auto="true"
+									allowTypes="/(\.|\/)(gif|jpe?g|png|mp4|mov|wmv|avi|mkv|webm)$/"
+									accept="image/jpeg,image/png,image/gif,video/*,.mp4,.mov,.wmv,.avi,.mkv"
+									widgetVar="mediaWidget2" sizeLimit="20971520"
+									invalidSizeMessage="File is too large. Maximum size is 20MB."
+									fileUploadListener="#{viewBean.handleFileUpload2}"
+									invalidFileMessage="Only image and video files (JPEG, PNG, GIF,mp4,mov...) are allowed."
+									style="width: 100%; margin-bottom: 2px; border: 2px dashed #cbd5e0; border-radius: 10px; padding: 20px; background: #f7fafc;">
+									<p:tooltip for="media2"
+										value="Upload media for content max 20MB(image/video)">
+									</p:tooltip>
+								</p:fileUpload>
+								<p:message for="media2" id="mediaMessage2" display="text"
+									style="color: #e53e3e; font-size: 14px;" />
 
-								</p:panelGrid>
-							</p:outputPanel>
-						</h:form>
-					</p:tab>
+								<p:commandButton rendered="#{viewBean.entry.id==null}"
+									id="submitButton2" ajax="true" process="itemView2"
+									actionListener="#{viewBean.lost}" value="📋 Report Lost"
+									update="@form"
+									style="background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);" />
 
-				</p:tabView>
-			</p:dialog>
+							</p:panelGrid>
+						</p:outputPanel>
+					</h:form>
+				</p:tab>
+
+			</p:tabView>
+		</p:dialog>
 
 
-			<p:dialog widgetVar="details" width="70%" height="70vh" id="details"
-				resizable="true" onHide="#{viewBean.clear()}" modal="true"
-				showEffect="fade" hideEffect="fade"
-				style="background: rgba(255,255,255,0.98); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: none;">
+		<p:dialog widgetVar="details" width="70%" height="70vh" id="details"
+			resizable="true" onHide="#{viewBean.clear()}" modal="true"
+			showEffect="fade" hideEffect="fade"
+			style="background: rgba(255,255,255,0.98); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: none;">
 
-				<f:facet name="header">
-					<div
-						style="display: flex; align-items: center; justify-content: center; padding: 20px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0; margin: -20px -20px 20px -20px;">
-						<svg width="24" height="24" viewBox="0 0 24 24"
-							fill="currentColor" style="margin-right: 12px;"> <path
-							d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-						</svg>
-						<span
-							style="font-size: 1.3em; font-weight: 600; letter-spacing: 0.5px;">Item
-							Details</span>
-					</div>
-				</f:facet>
-
-				<!-- Media Section -->
-				<div style="margin-bottom: 25px;">
-					<h:panelGroup
-						rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'VIDEO'}">
-						<div
-							style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0;">
-							<video width="100%" height="40%" controls="controls"
-								style="max-height: 35vh; border-radius: 13px;"> <source
-								src="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}" />
-							</video>
-						</div>
-					</h:panelGroup>
-
-					<h:panelGroup
-						rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'IMAGE'}">
-						<div
-							style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0;">
-							<video width="100%" height="40%"
-								poster="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}"
-								style="max-height: 35vh; border-radius: 13px;"> </video>
-						</div>
-					</h:panelGroup>
-
-					<!-- Fallback for no media -->
-					<h:panelGroup rendered="#{viewBean.entryMedia == null}">
-						<div
-							style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0; height: 200px; display: flex; align-items: center; justify-content: center;">
-							<div
-								style="display: flex; flex-direction: column; align-items: center; color: #a0aec0;">
-								<svg width="64" height="64" viewBox="0 0 24 24"
-									fill="currentColor" style="margin-bottom: 12px;"> <path
-									d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-								</svg>
-								<span style="font-size: 1.1em; font-weight: 500;">No
-									media available</span>
-							</div>
-						</div>
-					</h:panelGroup>
-				</div>
-
-				<!-- Details Grid -->
-				<p:panelGrid columns="1" id="grid323"
-					rendered="#{not empty viewBean.entry}"
-					style="width: 100%; background: #fafbfc; border-radius: 15px; padding: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-
-					<!-- Item Name -->
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							📝 Name</div>
-					</div>
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<span
-							style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #f7fafc; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1;">
-							#{viewBean.entry.name} </span>
-					</div>
-
-					<!-- Category -->
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							🏷️ Category</div>
-					</div>
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<span
-							style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%); padding: 10px 15px; border-radius: 8px; border: 1px solid #f56565; flex: 1;">
-							#{viewBean.entry.category} </span>
-					</div>
-
-					<!-- Description -->
-					<div
-						style="display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							📄 Description</div>
-					</div>
-					<div
-						style="display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="font-size: 1em; color: #4a5568; background: #f7fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1; line-height: 1.6; min-height: 60px;">
-							#{viewBean.entry.description}</div>
-					</div>
-
-					<!-- Location -->
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							📍 Location</div>
-					</div>
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<span
-							style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #e6fffa; padding: 10px 15px; border-radius: 8px; border: 1px solid #4fd1c7; flex: 1;">
-							#{viewBean.entry.location} </span>
-					</div>
-
-					<!-- Date Found/Lost -->
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							📅 Date Found</div>
-					</div>
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<span
-							style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #fff5f5; padding: 10px 15px; border-radius: 8px; border: 1px solid #feb2b2; flex: 1;">
-							<h:outputText value="#{viewBean.entry.dateReported}">
-								<f:convertDateTime pattern="yyyy-MM-dd" />
-							</h:outputText>
-						</span>
-					</div>
-
-					<!-- Date Posted -->
-					<div
-						style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-						<div
-							style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							📊 Date Posted
-							
-						</div>
-						<h:outputText value="#{viewBean.entry.createdDate}">
-								<f:convertDateTime pattern="yyyy-MM-dd" />
-							</h:outputText>
-					</div>
-				
-
-					<!-- Phone Number -->
-					<div style="display: flex; align-items: center; padding: 12px 0;">
-						<div
-							style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
-							📞 Contact</div>
-					</div>
-					<div style="display: flex; align-items: center; padding: 12px 0;">
-						<div
-							style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%); padding: 10px 15px; border-radius: 8px; border: 1px solid #63b3ed; flex: 1; display: flex; align-items: center;">
-							
-							#{viewBean.entry.contacts}
-						</div>
-					</div>
-
-				</p:panelGrid>
-
-				<!-- Action Buttons -->
+			<f:facet name="header">
 				<div
-					style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding: 20px 0; border-top: 1px solid #e2e8f0;">
-					<p:commandButton value="❌ Close"
-						onclick="PF('details').hide(); return false;"
-						style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);" />
+					style="display: flex; align-items: center; justify-content: center; padding: 20px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0; margin: -20px -20px 20px -20px;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+						style="margin-right: 12px;"> <path
+						d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+					</svg>
+					<span
+						style="font-size: 1.3em; font-weight: 600; letter-spacing: 0.5px;">Item
+						Details</span>
+				</div>
+			</f:facet>
 
-					<p:commandButton value="📧 Contact Owner"
-						style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);" />
+			<!-- Media Section -->
+			<div style="margin-bottom: 25px;">
+				<h:panelGroup
+					rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'VIDEO'}">
+					<div
+						style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0;">
+						<video width="100%" height="40%" controls="controls"
+							style="max-height: 35vh; border-radius: 13px;"> <source
+							src="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}" />
+						</video>
+					</div>
+				</h:panelGroup>
+
+				<h:panelGroup
+					rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'IMAGE'}">
+					<div
+						style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0;">
+						<video width="100%" height="40%"
+							poster="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}"
+							style="max-height: 35vh; border-radius: 13px;"> </video>
+					</div>
+				</h:panelGroup>
+
+				<!-- Fallback for no media -->
+				<h:panelGroup rendered="#{viewBean.entryMedia == null}">
+					<div
+						style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+						<div
+							style="display: flex; flex-direction: column; align-items: center; color: #a0aec0;">
+							<svg width="64" height="64" viewBox="0 0 24 24"
+								fill="currentColor" style="margin-bottom: 12px;"> <path
+								d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+							</svg>
+							<span style="font-size: 1.1em; font-weight: 500;">No media
+								available</span>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+
+			<!-- Details Grid -->
+			<p:panelGrid columns="1" id="grid323"
+				rendered="#{not empty viewBean.entry}"
+				style="width: 100%; background: #fafbfc; border-radius: 15px; padding: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+
+				<!-- Item Name -->
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						📝 Name</div>
+				</div>
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<span
+						style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #f7fafc; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1;">
+						#{viewBean.entry.name} </span>
 				</div>
 
-			</p:dialog>
+				<!-- Category -->
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						🏷️ Category</div>
+				</div>
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<span
+						style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%); padding: 10px 15px; border-radius: 8px; border: 1px solid #f56565; flex: 1;">
+						#{viewBean.entry.category} </span>
+				</div>
+
+				<!-- Description -->
+				<div
+					style="display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						📄 Description</div>
+				</div>
+				<div
+					style="display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="font-size: 1em; color: #4a5568; background: #f7fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1; line-height: 1.6; min-height: 60px;">
+						#{viewBean.entry.description}</div>
+				</div>
+
+				<!-- Location -->
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						📍 Location</div>
+				</div>
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<span
+						style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #e6fffa; padding: 10px 15px; border-radius: 8px; border: 1px solid #4fd1c7; flex: 1;">
+						#{viewBean.entry.location} </span>
+				</div>
+
+				<!-- Date Found/Lost -->
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						📅 Date Found</div>
+				</div>
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<span
+						style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #fff5f5; padding: 10px 15px; border-radius: 8px; border: 1px solid #feb2b2; flex: 1;">
+						<h:outputText value="#{viewBean.entry.dateReported}">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</span>
+				</div>
+
+				<!-- Date Posted -->
+				<div
+					style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+					<div
+						style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						📊 Date Posted</div>
+					<h:outputText value="#{viewBean.entry.createdDate}">
+						<f:convertDateTime pattern="yyyy-MM-dd" />
+					</h:outputText>
+				</div>
 
 
+				<!-- Phone Number -->
+				<div style="display: flex; align-items: center; padding: 12px 0;">
+					<div
+						style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+						📞 Contact</div>
+				</div>
+				<div style="display: flex; align-items: center; padding: 12px 0;">
+					<div
+						style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%); padding: 10px 15px; border-radius: 8px; border: 1px solid #63b3ed; flex: 1; display: flex; align-items: center;">
 
+						#{viewBean.entry.contacts}</div>
+				</div>
 
+			</p:panelGrid>
 
-		</ui:define>
+			<!-- Action Buttons -->
+			<div
+				style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding: 20px 0; border-top: 1px solid #e2e8f0;">
+				<p:commandButton value="❌ Close"
+					onclick="PF('details').hide(); return false;"
+					style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);" />
+
+				<p:commandButton value="📧 Contact Owner"
+					style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);" />
+			</div>
+
+		</p:dialog>
+				</ui:define>
+		
 	</ui:composition>
-
 </h:body>
+
 
 </html>
