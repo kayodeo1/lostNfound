@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.kayode.lostNfound.constants.QueryType;
 import com.kayode.lostNfound.model.Item;
+import com.kayode.lostNfound.model.ItemStatus;
 import com.kayode.lostNfound.model.ItemType;
 import com.kayode.lostNfound.model.Media;
 import com.kayode.lostNfound.model.MediaType;
@@ -71,8 +72,9 @@ public class ItemService {
 	public PagedList<Item> fetchItem(int first, int pageSize){
 		PagedList<Item> list = new PagedList<Item>();
 		TypedQuery<Item> query = em.createQuery(
-				"select s from Item s order by s.createdDate desc",
+				"select s from Item s WHERE s.itemStatus !=:status order by s.createdDate desc",
 				Item.class);
+		query.setParameter("status", ItemStatus.RESOLVED);
 		query.setFirstResult(first).setMaxResults(pageSize);
 		List<Item> res = query.getResultList();
 		list.setList(res);
@@ -86,8 +88,10 @@ public class ItemService {
 		public Number fetchItemCount()
 			{
 		TypedQuery<Number> query = em.createQuery(
-				"select count(s.id) from Item s",
+				"select count(s.id) from Item s WHERE s.itemStatus !=:status",
 				Number.class);
+		query.setParameter("status", ItemStatus.RESOLVED);
+
 		Number res = query.getSingleResult();
 		return res;
 	}

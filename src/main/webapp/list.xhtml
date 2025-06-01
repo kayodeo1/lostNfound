@@ -34,17 +34,15 @@
 				<div class="box box-primary">
 					<div class="box-header with-border">
 
-						<p:outputPanel id="viewItem"
-							style="text-align:center;">
+						<p:outputPanel id="viewItem" style="text-align:center;">
 
-							<p:dataTable id="itemList"
-								var="entry" value="#{itemBean.lazyModel}" paginator="true"
-								rows="5" paginatorPosition="bottom"
+							<p:dataTable id="itemList" var="entry"
+								value="#{itemBean.lazyModel}" paginator="true" rows="5"
+								paginatorPosition="bottom"
 								currentPageReportTemplate="Showing {startRecord}-{endRecord} out of {totalRecords}"
 								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 								rowsPerPageTemplate="5,10,15" selectionMode="single"
-								selection="#{itemBean.entry}" lazy="true"
-								rowKey="#{entry.id}">
+								selection="#{itemBean.entry}" lazy="true" rowKey="#{entry.id}">
 								<f:facet name="header">
 									<hr />
 									<p:spacer></p:spacer>
@@ -52,139 +50,249 @@
 									<strong>Item</strong> Entries Details </f:facet>
 
 
-								 
-								 <p:column headerText="name"
-									style="text-align:center;">
+
+								<p:column headerText="name" style="text-align:center;">
 									<h:outputText value="NA" rendered="#{entry.name==null} " />
-									<h:outputText value="#{entry.name}"/>
-								</p:column> 
-								 <p:column headerText="category"
-									style="text-align:center;">
+									<h:outputText value="#{entry.name}" />
+								</p:column>
+								<p:column headerText="category" style="text-align:center;">
 									<h:outputText value="NA" rendered="#{entry.category==null} " />
-									<h:outputText value="#{entry.category}"/>
-								</p:column> 
-								 <p:column headerText="location"
-									style="text-align:center;">
+									<h:outputText value="#{entry.category}" />
+								</p:column>
+								<p:column headerText="location" style="text-align:center;">
 									<h:outputText value="NA" rendered="#{entry.location==null} " />
-									<h:outputText value="#{entry.location}"/>
-								</p:column> 
-								 <p:column
-									headerText="dateReported" style="text-align:center;">
-									<h:outputText value="NA" rendered="#{entry.dateReported==null} " />
+									<h:outputText value="#{entry.location}" />
+								</p:column>
+								<p:column headerText="dateReported" style="text-align:center;">
+									<h:outputText value="NA"
+										rendered="#{entry.dateReported==null} " />
 									<h:outputText value="#{entry.dateReported}">
 										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
 									</h:outputText>
-								</p:column>  
-								 <p:column
-									headerText="dateClaimed" style="text-align:center;">
+								</p:column>
+								<p:column headerText="dateClaimed" style="text-align:center;">
 									<h:outputText value="NA" rendered="#{entry.dateClaimed==null} " />
 									<h:outputText value="#{entry.dateClaimed}">
 										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
 									</h:outputText>
-								</p:column>  
-								 <p:column headerText="itemType"
-									style="text-align:center;">
+								</p:column>
+								<p:column headerText="itemType" style="text-align:center;">
 									<h:outputText value="NA" rendered="#{entry.itemType==null} " />
-									<h:outputText value="#{entry.itemType}"/>
-								</p:column> 
-								 <p:column headerText="itemStatus"
-									style="text-align:center;">
+									<h:outputText value="#{entry.itemType}" />
+								</p:column>
+								<p:column headerText="itemStatus" style="text-align:center;">
 									<h:outputText value="NA" rendered="#{entry.itemStatus==null} " />
-									<h:outputText value="#{entry.itemStatus}"/>
+									<h:outputText value="#{entry.itemStatus}" />
 								</p:column>
 								<p:column headerText="">
 									<p:menuButton value="Action">
 										<p:menuitem value="Edit" icon="ui-icon-arrowrefresh-1-w"
 											style="font-size:1em!important;" process="@this"
-											actionListener="#{itemBean.displayItemDialog(entry)}"
-									update="itemView,global_msg"
-											immediate="true"
+											actionListener="#{viewBean.loadEntry(entry)}"
+											update="itemView,global_msg" immediate="true"
 											oncomplete="PF('itemDialog').show()">
 											<p:resetInput target="itemView" />
 										</p:menuitem>
-								</p:menuButton>
+									</p:menuButton>
 								</p:column>
 							</p:dataTable>
-							<p:commandButton id="submitButton" immediate="true"
-								rendered="true" action="#{itemBean.createNewItemView}"
-								oncomplete="PF('itemDialog').show()"
-								update="itemView,global_msg"
-								value="Create New Item">
-								<p:resetInput target="itemView" />
-							</p:commandButton>
+
 
 						</p:outputPanel>
 					</div>
 				</div>
 
 
-				<p:dialog header="Item"
-					widgetVar="itemDialog"
-					id="itemDialog" modal="true"
-					showEffect="fade" hideEffect="fade" resizable="true">
+				<p:dialog widgetVar="itemDialog" width="70%" height="70vh"
+					id="itemView" resizable="true" onHide="#{viewBean.clear()}"
+					modal="true" showEffect="fade" hideEffect="fade"
+					style="background: rgba(255,255,255,0.98); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: none;">
+					<h:form>
+					<f:facet name="header">
+						<div
+							style="display: flex; align-items: center; justify-content: center; padding: 20px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0; margin: -20px -20px 20px -20px;">
+							<svg width="24" height="24" viewBox="0 0 24 24"
+								fill="currentColor" style="margin-right: 12px;"> <path
+								d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+							</svg>
+							<span
+								style="font-size: 1.3em; font-weight: 600; letter-spacing: 0.5px;">Item
+								Details</span>
+						</div>
+					</f:facet>
 
-					<p:outputPanel id="itemView"
-						style="text-align:center;">
-						<p:messages id="view_equip" severity="info,error"
-							globalOnly="true" />
-						<p:panelGrid columns="3" id="grid3" rendered="#{not empty itemBean.entry}">
-							<f:facet name="header">
-								<p:graphicImage name="img/user_groups_admin.png" /> #{itemBean.entry.id}
-							</f:facet>
+					<!-- Media Section -->
+					<div style="margin-bottom: 25px;">
+						<h:panelGroup
+							rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'VIDEO'}">
+							<div
+								style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0;">
+								<video width="100%" height="40%" controls="controls"
+									style="max-height: 35vh; border-radius: 13px;"> <source
+									src="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}" />
+								</video>
+							</div>
+						</h:panelGroup>
 
-							   <p:outputLabel
-								for="name" value="name:" /> <p:inputText id="name" value="#{itemBean.entry.name}" required="true"
-								requiredMessage="name must be supplied" size="70">
-							</p:inputText> <p:message id="m_name" for="name" />   <p:outputLabel
-								for="category" value="category:" /> <p:inputText id="category" value="#{itemBean.entry.category}" required="true"
-								requiredMessage="category must be supplied" size="70">
-							</p:inputText> <p:message id="m_category" for="category" />   <p:outputLabel
-								for="location" value="location:" /> <p:inputText id="location" value="#{itemBean.entry.location}" required="true"
-								requiredMessage="location must be supplied" size="70">
-							</p:inputText> <p:message id="m_location" for="location" />  
-							<p:outputLabel for="dateReported" value="dateReported:" /> <p:calendar
-								title="dateReported" id="dateReported" required="true" pattern="dd-MM-yyyy"
-								navigator="true" yearRange="c-120:c" value="#{itemBean.entry.dateReported}"
-								requiredMessage="dateReported must be supplied"
-								size="70">
-								<p:tooltip id="tp_dateReported" for="dateReported" showEvent="focus"
-									hideEvent="blur" position="top" />
-							</p:calendar> <p:message id="m_dateReported" for="dateReported" />   
-							<p:outputLabel for="dateClaimed" value="dateClaimed:" /> <p:calendar
-								title="dateClaimed" id="dateClaimed" required="true" pattern="dd-MM-yyyy"
-								navigator="true" yearRange="c-120:c" value="#{itemBean.entry.dateClaimed}"
-								requiredMessage="dateClaimed must be supplied"
-								size="70">
-								<p:tooltip id="tp_dateClaimed" for="dateClaimed" showEvent="focus"
-									hideEvent="blur" position="top" />
-							</p:calendar> <p:message id="m_dateClaimed" for="dateClaimed" />    <p:outputLabel
-								for="itemType" value="itemType:" /> <p:inputText id="itemType" value="#{itemBean.entry.itemType}" required="true"
-								requiredMessage="itemType must be supplied" size="70">
-							</p:inputText> <p:message id="m_itemType" for="itemType" />   <p:outputLabel
-								for="itemStatus" value="itemStatus:" /> <p:inputText id="itemStatus" value="#{itemBean.entry.itemStatus}" required="true"
-								requiredMessage="itemStatus must be supplied" size="70">
-							</p:inputText> <p:message id="m_itemStatus" for="itemStatus" />
+						<h:panelGroup
+							rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'IMAGE'}">
+							<div
+								style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0;">
+								<video width="100%" height="40%"
+									poster="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}"
+									style="max-height: 35vh; border-radius: 13px;"> </video>
+							</div>
+						</h:panelGroup>
 
-							<p:commandButton rendered="#{itemBean.entry.id==null}"
-								id="submitButton2" ajax="true"
-								process="itemView"
-								actionListener="#{itemBean.createItem}"
-								value="Create Item"
-								update="itemView,global_msg" />
+						<!-- Fallback for no media -->
+						<h:panelGroup rendered="#{viewBean.entryMedia == null}">
+							<div
+								style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border: 2px solid #e2e8f0; height: 200px; display: flex; align-items: center; justify-content: center;">
+								<div
+									style="display: flex; flex-direction: column; align-items: center; color: #a0aec0;">
+									<svg width="64" height="64" viewBox="0 0 24 24"
+										fill="currentColor" style="margin-bottom: 12px;"> <path
+										d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+									</svg>
+									<span style="font-size: 1.1em; font-weight: 500;">No
+										media available</span>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
 
-							<p:commandButton rendered="#{itemBean.entry.id!=null}"
-								id="submitButton3" ajax="true"
-								process="itemView"
-								actionListener="#{itemBean.updateItem}"
-								value="Update Item"
-								update="itemView,global_msg" />
-							<p:spacer />
-							<p:spacer />
+					<!-- Details Grid -->
+					<p:panelGrid columns="1" id="grid323"
+						rendered="#{not empty viewBean.entry}"
+						style="width: 100%; background: #fafbfc; border-radius: 15px; padding: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
 
-						</p:panelGrid>
-					</p:outputPanel>
+						<!-- Item Name -->
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								📝 Name</div>
+						</div>
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<span
+								style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #f7fafc; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1;">
+								#{viewBean.entry.name} </span>
+						</div>
 
-				</p:dialog>
+						<!-- Category -->
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								🏷️ Category</div>
+						</div>
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<span
+								style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%); padding: 10px 15px; border-radius: 8px; border: 1px solid #f56565; flex: 1;">
+								#{viewBean.entry.category} </span>
+						</div>
+
+						<!-- Description -->
+						<div
+							style="display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								📄 Description</div>
+						</div>
+						<div
+							style="display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="font-size: 1em; color: #4a5568; background: #f7fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1; line-height: 1.6; min-height: 60px;">
+								#{viewBean.entry.description}</div>
+						</div>
+
+						<!-- Location -->
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								📍 Location</div>
+						</div>
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<span
+								style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #e6fffa; padding: 10px 15px; border-radius: 8px; border: 1px solid #4fd1c7; flex: 1;">
+								#{viewBean.entry.location} </span>
+						</div>
+
+						<!-- Date Found/Lost -->
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								📅 Date Found</div>
+						</div>
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<span
+								style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #fff5f5; padding: 10px 15px; border-radius: 8px; border: 1px solid #feb2b2; flex: 1;">
+								<h:outputText value="#{viewBean.entry.dateReported}">
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+							</span>
+						</div>
+
+						<!-- Date Posted -->
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<div
+								style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								📊 Date Posted</div>
+						</div>
+						<div
+							style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+							<span
+								style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: #f0fff4; padding: 10px 15px; border-radius: 8px; border: 1px solid #9ae6b4; flex: 1;">
+								<h:outputText value="#{viewBean.entry.createdDate}">
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+							</span>
+						</div>
+
+						<!-- Phone Number -->
+						<div style="display: flex; align-items: center; padding: 12px 0;">
+							<div
+								style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9em; margin-right: 15px; min-width: 120px; text-align: center;">
+								📞 Contact</div>
+						</div>
+						<div style="display: flex; align-items: center; padding: 12px 0;">
+							<div
+								style="font-size: 1.1em; font-weight: 600; color: #2d3748; background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%); padding: 10px 15px; border-radius: 8px; border: 1px solid #63b3ed; flex: 1; display: flex; align-items: center;">
+								<svg width="18" height="18" viewBox="0 0 24 24"
+									fill="currentColor" style="margin-right: 8px; color: #3182ce;">
+								<path
+									d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+								</svg>
+								#{viewBean.entry.contacts}
+							</div>
+						</div>
+
+					</p:panelGrid>
+
+					<!-- Action Buttons -->
+					<div
+						style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding: 20px 0; border-top: 1px solid #e2e8f0;">
+						<p:commandButton value="❌ Close"
+							onclick="PF('details').hide(); return false;"
+							style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);" />
+
+						<p:commandButton value="Mark as claimed" process="@this"
+							actionListener="#{viewBean.markFound(entry)}" immediate="true"
+							style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);" />
+					</div>
+			</h:form>
+
+			</p:dialog>
+
+
+
 
 			</h:form>
 		</ui:define>

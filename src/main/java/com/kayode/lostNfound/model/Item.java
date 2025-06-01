@@ -40,7 +40,6 @@ public void setCreatedDate(Date createdDate) {
 }
 @Temporal(TemporalType.TIMESTAMP)
 private Date lastModifiedDate;
-private Date dateReported;
 private String name;
 @Enumerated(EnumType.STRING)
 private Category category;

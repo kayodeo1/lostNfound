@@ -43,7 +43,7 @@ import com.kayode.lostNfound.service.MediaService;
 @ViewScoped
 public class viewBean implements Serializable {
 	public static final String APP_BASE_NAME = Constants.APP_BASE_NAME;
-	private static final String VIEW_URL = APP_BASE_NAME + "/view.xhtml?faces-redirect=true";
+	private static final String VIEW_URL = APP_BASE_NAME + "/view2.xhtml?faces-redirect=true";
 
 	@Inject
 	private ItemService itemService;
@@ -66,6 +66,23 @@ public class viewBean implements Serializable {
 	public void init() {
 		System.out.println("view bean invoked!!!");
 		setCategories(Arrays.asList(Category.values()));
+
+	}
+
+	public void markFound(Item e) {
+		System.out.println("claiming.....");
+		this.entry = e;
+		this.entry.setItemStatus(ItemStatus.RESOLVED);
+		this.entry.setItemType(ItemType.FOUND);
+		this.entry.setDateClaimed(new Date());
+		itemService.updateItem(this.entry);
+		Messages.addFlashGlobalInfo(this.entry.getName() + "has been claimed ");
+		try {
+			Faces.redirect(VIEW_URL);
+		} catch (IOException ex) {
+			Messages.addFlashGlobalInfo(this.entry.getName() + "claim failed ");
+			ex.printStackTrace();
+		}
 
 	}
 
@@ -127,18 +144,16 @@ public class viewBean implements Serializable {
 
 	public MediaType getMediaType(String extension) {
 		Set<String> imageExtensions = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif"));
-	    
-	    Set<String> videoExtensions = new HashSet<>(Arrays.asList("mp4", "mov", "wmv", "avi", "mkv", "webm"));
-	    
-	    
-	    
-	    if (imageExtensions.contains(extension)) {
-	        return MediaType.IMAGE;
-	    } else if (videoExtensions.contains(extension)) {
-	        return MediaType.VIDEO;
-	    } else {
-	        return null; 
-	    }
+
+		Set<String> videoExtensions = new HashSet<>(Arrays.asList("mp4", "mov", "wmv", "avi", "mkv", "webm"));
+
+		if (imageExtensions.contains(extension)) {
+			return MediaType.IMAGE;
+		} else if (videoExtensions.contains(extension)) {
+			return MediaType.VIDEO;
+		} else {
+			return null;
+		}
 
 	}
 
@@ -223,7 +238,7 @@ public class viewBean implements Serializable {
 			return "lostNfound_clothing.jpg";
 		case ELECTRONICS:
 			return "lostNfound_electronics.jpg";
-		case ATM_CARD :
+		case ATM_CARD:
 			return "lostNfound_atm_card.jpg";
 		case KEYS:
 			return "lostNfound_keys.jpg";
@@ -231,13 +246,11 @@ public class viewBean implements Serializable {
 			return "lostNfound_materials.jpg";
 		default:
 			return "lostNfound.png";
-		
-		
+
 		}
-		
-		
-		
+
 	}
+
 	public void listItem() {
 		LOG.info("listItem invoked!!!");
 		try {
