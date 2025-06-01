@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.kayode.lostNfound.constants.QueryType;
 import com.kayode.lostNfound.model.Item;
+import com.kayode.lostNfound.model.ItemType;
 import com.kayode.lostNfound.model.PagedList;
 import com.kayode.lostNfound.service.ItemService;
 
@@ -64,6 +65,12 @@ public class ItemLazyDataModel extends LazyDataModel<Item> {
 			switch (query) {
 			case GET_ALL_ITEM:
 				pagedList = service.fetchItem(first, pageSize);
+				break;
+			case GET_LOST:
+				pagedList = service.fetchItem(first, pageSize,ItemType.LOST);
+				break;
+			case GET_FOUND:
+				pagedList = service.fetchItem(first, pageSize,ItemType.FOUND);
 				break;
 			default:
 				LOG.warn("query type not found! , " + query);

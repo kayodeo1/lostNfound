@@ -32,10 +32,10 @@
 	</servlet-mapping>
 
 
-	<!-- <resource-ref>
-		<res-ref-name>myDataSource</res-ref-name>
+	<resource-ref>
+		<res-ref-name>lostNfound</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
-	</resource-ref> -->
+	</resource-ref>
 	<filter>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>

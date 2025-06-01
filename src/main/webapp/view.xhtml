@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+
+<h:head>
+	<f:metadata>
+		<f:viewAction action="#{viewBean.listItem()}" />
+	</f:metadata>
+</h:head>
+<h:body>
+
+	<ui:composition template="/ie_template2.html">
+
+
+		<ui:define name="body_" style="width:100vw;">
+			<f:facet name="header" id="notification_header">
+				<p:messages id="global_message" globalOnly="true"
+					style="width:96vw;" />
+			</f:facet>
+			<p:panelGrid columns="1">
+				<div id="report-bar" style="width: 96vw">
+					<p:commandButton value="Report Item" style="float:right"
+						immediate="true" rendered="true"
+						action="#{viewBean.createNewItemView}"
+						oncomplete="PF('itemDialog').show()"
+						update="itemDialog,global_message">
+					</p:commandButton>
+				</div>
+
+				<p:tabView>
+					<p:tab id="found_tab" title="Reported Found Items"
+						style="width:100%">
+
+						<div class="datagrid-container"
+							style="position: fixed; width: 85%; margin-left: 0em; margin-top: -1em; height: 500px; overflow-y: auto; overflow-x: hidden; border: 1px solid #ddd; border-radius: 4px;">
+
+							<p:dataGrid var="entry" value="#{viewBean.lazyModel1}"
+								columns="3" layout="grid" rows="6" paginator="true" id="found"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								selection="#{viewBean.entry}" lazy="true" rowKey="#{entry.id}">
+								<f:facet name="header">
+              				 Found Items
+            		</f:facet>
+
+								<div class="category-card" style="height: 250px; margin: 4em;">
+									<h:form>
+										<div class="category-content">
+											<h3 class="category-title" style="text-align: center;">#{entry.name}</h3>
+											<video width="100%" height="160px"
+												poster="#{request.contextPath}/resources/icons/#{viewBean.getDisplayImage(entry.category)}">
+											</video>
+											<p:inputTextarea rows="2" style="width:100%;border:0px;"
+												readonly="true" value="#{entry.description}"></p:inputTextarea>
+											<p:commandButton value="View"
+												actionListener="#{viewBean.loadEntry(entry)}"
+												style="font-size:1em!important;width:100%;" process="@this"
+												update="details" immediate="true"
+												oncomplete="PF('details').show()" styleClass="view-action" />
+											<div class="category-meta">
+												<div>#{entry.category}</div>
+												<span style="width: 100%"><p style="float: left;">
+														#{entry.itemType}</p>
+													<p style="float: right;">#{entry.location}</p> </span>
+											</div>
+										</div>
+									</h:form>
+
+								</div>
+
+							</p:dataGrid>
+
+
+
+
+						</div>
+					</p:tab>
+					<p:tab id="lost_tab" title="Reported Lost Items">
+
+						<div class="datagrid-container"
+							style="position: fixed; width: 85%; margin-left: 0em; margin-top: -1em; height: 500px; overflow-y: auto; overflow-x: hidden; border: 1px solid #ddd; border-radius: 4px;">
+
+							<p:dataGrid var="entry" value="#{viewBean.lazyModel2}"
+								columns="3" layout="grid" rows="6" paginator="true" id="lost"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								selection="#{userBean.entry}" lazy="true" rowKey="#{entry.id}">
+								<f:facet name="header">
+              				 Lost Items
+            		</f:facet>
+								<h:form>
+									<div class="category-content">
+										<h3 class="category-title" style="text-align: center;">#{entry.name}</h3>
+										<video width="100%" height="160px"
+											poster="#{request.contextPath}/resources/icons/#{viewBean.getDisplayImage(entry.category)}">
+										</video>
+										<p:inputTextarea rows="2" style="width:100%;border:0px;"
+											readonly="true" value="#{entry.description}"></p:inputTextarea>
+										<p:commandButton value="View"
+											actionListener="#{viewBean.loadEntry(entry)}"
+											style="font-size:1em!important;width:100%;" process="@this"
+											update="details" immediate="true"
+											oncomplete="PF('details').show()" styleClass="view-action" />
+										<div class="category-meta">
+											<div>#{entry.category}</div>
+											<span style="width: 100%"><p style="float: left;">
+													#{entry.itemType}</p>
+												<p style="float: right;">#{entry.location}</p> </span>
+										</div>
+									</div>
+								</h:form>
+
+
+
+							</p:dataGrid>
+
+
+
+
+						</div>
+					</p:tab>
+
+
+
+				</p:tabView>
+			</p:panelGrid>
+
+			<p:dialog header="Report Item" widgetVar="itemDialog" id="itemDialog"
+				modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+
+				<p:tabView>
+					<p:tab id="report-found" title=" Found Item" style="width:100%">
+						<h:form enctype="multipart/form-data" id="itemView">
+
+							<p:outputPanel id="itemView3" style="text-align:center;">
+								<p:messages id="view_equip" severity="info,error"
+									globalOnly="true" />
+								<p:panelGrid columns="3" id="grid32"
+									rendered="#{not empty viewBean.entry}">
+									<f:facet name="header">
+										<p:graphicImage name="img/user_groups_admin.png" /> #{viewBean.entry.id}
+							</f:facet>
+
+									<p:outputLabel for="name" value="Name:" />
+									<p:inputText id="name" value="#{viewBean.entry.name}"
+										required="true" requiredMessage="name must be supplied"
+										size="70">
+									</p:inputText>
+									<p:message id="m_name" for="name" />
+									<p:outputLabel for="category" value="category:" />
+
+									<h:selectOneMenu value="#{viewBean.entry.category}"
+										id="category"
+										style="width: 100%; padding: 1px; border: 0 solid #ddd; border-radius: 4px; box-sizing: border-box; ">
+										<f:selectItems value="#{viewBean.categories}" />
+
+										<f:ajax />
+									</h:selectOneMenu>
+									<p:message id="m_category" for="category" />
+									<p:outputLabel for="desc" value="Description" />
+									<p:inputText id="desc" value="#{viewBean.entry.description}"
+										required="true" requiredMessage="description must be supplied"
+										size="70">
+									</p:inputText>
+									<p:message id="m_desc" for="desc" />
+									<p:outputLabel for="location" value="Location:" />
+									<p:inputText id="location" value="#{viewBean.entry.location}"
+										required="true" requiredMessage="location must be supplied"
+										size="70">
+									</p:inputText>
+									<p:message id="m_location" for="location" />
+									<p:outputLabel for="dateReported" value="Date Found:" />
+									<p:calendar title="date found" id="dateReported"
+										required="true" pattern="yyyy-MM-dd" navigator="true"
+										yearRange="c-120:c" value="#{viewBean.entry.dateReported}"
+										requiredMessage="dateReported must be supplied" size="70">
+										<p:tooltip id="tp_dateReported" for="dateReported"
+											showEvent="focus" hideEvent="blur" position="top" />
+									</p:calendar>
+									<p:message id="m_dateReported" for="dateReported" />
+									<p:outputLabel for="contact" value="Phone number" />
+									<p:inputText id="contact" value="#{viewBean.entry.contacts}"
+										required="true"
+										requiredMessage="your phone number must be supplied" size="70">
+									</p:inputText>
+									<p:message id="m_contact" for="contact" />
+
+									<h:outputLabel value="Select File"
+										style="font-weight: bold; display: block; margin-bottom: 5px; color: #555;" />
+									<p:fileUpload id="media" mode="advanced" auto="true"
+										allowTypes="/(\.|\/)(gif|jpe?g|png|mp4|mov|wmv|avi|mkv|webm)$/"
+										accept="image/jpeg,image/png,image/gif,video/*,.mp4,.mov,.wmv,.avi,.mkv"
+										widgetVar="mediaWidget1" sizeLimit="20971520"
+										invalidSizeMessage="File is too large. Maximum size is 20MB."
+										fileUploadListener="#{viewBean.handleFileUpload}"
+										invalidFileMessage="Only image and video files (JPEG, PNG, GIF,mp4,mov...) are allowed."
+										style="width: 100%; margin-bottom: 2px;" update="mediaMessage">
+										<p:tooltip for="media"
+											value="Upload media for content max 20MB(image/video)">
+										</p:tooltip>
+									</p:fileUpload>
+									<p:message for="media" id="mediaMessage" display="text"
+										style="color: #d32f2f; font-size: 14px;" />
+									<p:commandButton rendered="#{viewBean.entry.id==null}"
+										id="submitButton22" ajax="true" process="itemView"
+										actionListener="#{viewBean.found}" value="Report Found"
+										update="@form" />
+
+
+
+								</p:panelGrid>
+							</p:outputPanel>
+						</h:form>
+					</p:tab>
+					<p:tab id="report-lost" title="Lost Items" style="width:100%">
+						<h:form enctype="multipart/form-data" id="itemView2">
+
+							<p:outputPanel style="text-align:center;">
+								<p:messages id="view_equip2" severity="info,error"
+									globalOnly="true" />
+								<p:panelGrid columns="3" id="grid3"
+									rendered="#{not empty viewBean.entry}">
+									<f:facet name="header">
+										<p:graphicImage name="img/user_groups_admin.png" /> #{viewBean.entry.id}
+							</f:facet>
+
+									<p:outputLabel for="name2" value="Name:" />
+									<p:inputText id="name2" value="#{viewBean.entry.name}"
+										required="true" requiredMessage="name must be supplied"
+										size="70">
+									</p:inputText>
+									<p:message id="m_name2" for="name2" />
+									<p:outputLabel for="category2" value="category:" />
+
+									<h:selectOneMenu value="#{viewBean.entry.category}"
+										id="category2"
+										style="width: 100%; padding: 1px; border: 0 solid #ddd; border-radius: 4px; box-sizing: border-box;">
+										<f:selectItems value="#{viewBean.categories}" />
+
+										<f:ajax />
+									</h:selectOneMenu>
+									<p:message id="m_category2" for="category2" />
+									<p:outputLabel for="desc2" value="Description" />
+									<p:inputText id="desc2" value="#{viewBean.entry.description}"
+										required="true" requiredMessage="description must be supplied"
+										size="70">
+									</p:inputText>
+									<p:message id="m_desc2" for="desc2" />
+									<p:outputLabel for="location2" value="Location:" />
+									<p:inputText id="location2" value="#{viewBean.entry.location}"
+										required="true" requiredMessage="location must be supplied"
+										size="70">
+									</p:inputText>
+									<p:message id="m_location2" for="location2" />
+									<p:outputLabel for="dateReported2" value="Date Lost" />
+									<p:calendar title="date lost" id="dateReported2"
+										required="true" pattern="dd-MM-yyyy" navigator="true"
+										yearRange="c-120:c" value="#{viewBean.entry.dateReported}"
+										requiredMessage="dateReported must be supplied" size="70">
+										<p:tooltip id="tp_dateReported2" for="dateReported2"
+											showEvent="focus" hideEvent="blur" position="top" />
+									</p:calendar>
+									<p:message id="m_dateReported2" for="dateReported2" />
+									<p:outputLabel for="contact2" value="Phone number" />
+									<p:inputText id="contact2" value="#{viewBean.entry.contacts}"
+										required="true"
+										requiredMessage="your phone number must be supplied" size="70">
+									</p:inputText>
+									<p:message id="m_contact2" for="contact2" />
+
+									<h:outputLabel value="Select File(if available)"
+										style="font-weight: bold; display: block; margin-bottom: 5px; color: #555;" />
+									<p:fileUpload id="media2" mode="advanced" auto="true"
+										allowTypes="/(\.|\/)(gif|jpe?g|png|mp4|mov|wmv|avi|mkv|webm)$/"
+										accept="image/jpeg,image/png,image/gif,video/*,.mp4,.mov,.wmv,.avi,.mkv"
+										widgetVar="mediaWidget2" sizeLimit="20971520"
+										invalidSizeMessage="File is too large. Maximum size is 20MB."
+										fileUploadListener="#{viewBean.handleFileUpload2}"
+										invalidFileMessage="Only image and video files (JPEG, PNG, GIF,mp4,mov...) are allowed."
+										style="width: 100%; margin-bottom: 2px;">
+										<p:tooltip for="media2"
+											value="Upload media for content max 20MB(image/video)">
+										</p:tooltip>
+									</p:fileUpload>
+									<p:message for="media2" id="mediaMessage2" display="text"
+										style="color: #d32f2f; font-size: 14px;" />
+									<p:commandButton rendered="#{viewBean.entry.id==null}"
+										id="submitButton2" ajax="true" process="itemView2"
+										actionListener="#{viewBean.lost}" value="Report Lost"
+										update="@form" />
+
+
+
+								</p:panelGrid>
+							</p:outputPanel>
+						</h:form>
+					</p:tab>
+
+				</p:tabView>
+			</p:dialog>
+
+
+
+
+
+
+
+
+			<p:dialog widgetVar="details" width="60%" height="60vh" id="details"
+				resizable="true" onHide="#{viewBean.clear()}">
+
+				<h:panelGroup
+					rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'VIDEO'}">
+					<div
+						style="position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);">
+						<video width="100%" height="40%" controls="controls"
+							style="max-height:30vh"> <source
+							src="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}" />
+						</video>
+					</div>
+				</h:panelGroup>
+				<h:panelGroup
+					rendered="#{viewBean.entryMedia != null and viewBean.entryMedia.mediaType == 'IMAGE'}">
+					<div
+						style="position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);">
+						<video width="100%" height="40%"
+							poster="#{request.contextPath}/resources/uploads/#{viewBean.entryMedia.identifier}"
+							style="max-height:30vh"> </video>
+					</div>
+				</h:panelGroup>
+
+
+
+				<p:panelGrid columns="2" id="grid323"
+					rendered="#{not empty viewBean.entry}"
+					style="width:100%;margin-top:2em;border:0px;">
+
+
+					<p:outputLabel value="Name:" />
+					<p:outputLabel value="#{viewBean.entry.name}" />
+					<p:outputLabel value="category:" />
+
+					<p:outputLabel value="#{viewBean.entry.category}"
+						style="width: 100%; padding: 1px; border: 0 solid #ddd; border-radius: 4px; box-sizing: border-box; " />
+
+
+
+
+					<p:outputLabel value="Description" />
+					<p:outputLabel value="#{viewBean.entry.description}" />
+
+					<p:outputLabel value="Location:" />
+					<p:outputLabel value="#{viewBean.entry.location}" />
+					<p:outputLabel value="Date Found:" />
+					<p:outputLabel value="#{viewBean.entry.dateReported}">
+						<f:convertDateTime pattern="yyyy-MM-dd" />
+					</p:outputLabel>
+
+					<p:outputLabel value="Date Posted" />
+					<h:outputText value="#{viewBean.entry.createdDate}">
+						<f:convertDateTime pattern="yyyy-MM-dd" />
+					</h:outputText>
+					<p:outputLabel value="Phone number" />
+					<p:outputLabel value="#{viewBean.entry.contacts}" />
+
+
+
+				</p:panelGrid>
+
+
+
+
+			</p:dialog>
+
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

@@ -26,12 +26,28 @@ public class Item extends AbstractEntity {
 
 @Temporal(TemporalType.TIMESTAMP)
 private Date createdDate;
+/**
+ * @return the createdDate
+ */
+public Date getCreatedDate() {
+	return createdDate;
+}
+/**
+ * @param createdDate the createdDate to set
+ */
+public void setCreatedDate(Date createdDate) {
+	this.createdDate = createdDate;
+}
 @Temporal(TemporalType.TIMESTAMP)
 private Date lastModifiedDate;
-private String name;
-private String category;
-private String location;
 private Date dateReported;
+private String name;
+@Enumerated(EnumType.STRING)
+private Category category;
+private String location;
+private String description;
+private Date dateReported;
+private String contacts;
 private Date dateClaimed;
 @Enumerated(EnumType.STRING)
 private ItemType itemType;
@@ -108,13 +124,13 @@ public void setDateClaimed(Date dateClaimed) {
 }/**
  * @return the category
  */
-public String getCategory(){
+public Category getCategory(){
 	return category;
 }
 /**
  * @param category the category to set
  */
-public void setCategory(String category) {
+public void setCategory(Category category) {
 	this.category = category;
 }
 @PrePersist
@@ -124,6 +140,18 @@ private void onCreate() {
 @PreUpdate
 private void onUpdate() {
 	lastModifiedDate = new Date();
+}
+public String getDescription() {
+	return description;
+}
+public void setDescription(String description) {
+	this.description = description;
+}
+public String getContacts() {
+	return contacts;
+}
+public void setContacts(String contacts) {
+	this.contacts = contacts;
 }
 
 }
