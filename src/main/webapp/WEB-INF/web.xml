@@ -46,7 +46,7 @@
     </filter-mapping>
 
     <resource-ref>
-        <res-ref-name>lostNfound</res-ref-name>
+        <res-ref-name>myDataSource</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
     </resource-ref>
 

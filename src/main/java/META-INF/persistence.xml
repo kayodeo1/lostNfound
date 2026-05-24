@@ -8,21 +8,15 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>java:comp/env/myDataSource</jta-data-source>
 
-			<properties>
-    <property name="eclipselink.weaving" value="false" />
-    <property name="eclipselink.deploy-on-startup" value="true" />
-    
-    
-    
-    <!-- fix by cepps  -->
-    <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
-    
-    
-    <property name="eclipselink.ddl-generation.output-mode" value="database" />
-    <property name="eclipselink.logging.level" value="FINEST" />
-    <property name="eclipselink.logging.level.ddl" value="FINEST" />
-    <property name="eclipselink.logging.level.sql" value="FINEST" />
-    <property name="eclipselink.logging.parameters" value="true" />
-</properties>
+		<properties>
+			<property name="eclipselink.ddl-generation"
+				value="create-or-extend-tables" />
+			<property name="eclipselink.ddl-generation.output-mode"
+				value="database" />
+			<property name="eclipselink.logging.level" value="FINE" />
+			<property name="eclipselink.logging.parameters"
+				value="false" />
+			<property name="eclipselink.logging.sql" value="false" />
+		</properties>
 	</persistence-unit>
 </persistence>
