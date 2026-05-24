@@ -1,10 +1,6 @@
-/**
- * 
- */
 package com.kayode.lostNfound.lazymodel;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,78 +15,66 @@ import com.kayode.lostNfound.model.ItemType;
 import com.kayode.lostNfound.model.PagedList;
 import com.kayode.lostNfound.service.ItemService;
 
-/**
- * @author Kayode Ojo
- *
- */
 public class ItemLazyDataModel extends LazyDataModel<Item> {
 
-	private ItemService service;
-	private QueryType query;
+    private static final Logger LOG = LoggerFactory.getLogger(ItemLazyDataModel.class);
 
-	List<Item> list = new ArrayList<>();
+    private final ItemService service;
+    private final QueryType query;
+    private final String searchTerm;
 
-	private static Logger LOG = LoggerFactory.getLogger(ItemLazyDataModel.class);
+    private List<Item> list = new ArrayList<>();
 
-	public ItemLazyDataModel(ItemService service,QueryType query) {
-		this.service = service;
-		this.query = query;
-	}
+    public ItemLazyDataModel(ItemService service, QueryType query) {
+        this(service, query, null);
+    }
 
-	@Override
-	public Item getRowData(String rowKey) {
-		// LOG.info("getRowData method invoked!");
-		for (Item r : list) {
-			if ((r.getId()).equals(rowKey))
-				return r;
-		}
+    public ItemLazyDataModel(ItemService service, QueryType query, String searchTerm) {
+        this.service    = service;
+        this.query      = query;
+        this.searchTerm = (searchTerm != null && !searchTerm.trim().isEmpty()) ? searchTerm.trim() : null;
+    }
 
-		return null;
-	}
+    @Override
+    public Item getRowData(String rowKey) {
+        for (Item r : list) {
+            if (String.valueOf(r.getId()).equals(rowKey)) return r;
+        }
+        return null;
+    }
 
-	@Override
-	public Object getRowKey(Item r) {
-		// LOG.info("getRowKey method invoked! " + cdt);
-		return r.getId();
-	}
+    @Override
+    public Object getRowKey(Item r) {
+        return r.getId();
+    }
 
-	@Override
-	public List<Item> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-			Map<String, Object> filters) {
-		try {
-			LOG.info("query invoked >>> " + query);
-			List<Item> data = new ArrayList<>();
-			// paginate db entries
-			PagedList<Item> pagedList = new PagedList<>();
-			switch (query) {
-			case GET_ALL_ITEM:
-				pagedList = service.fetchItem(first, pageSize);
-				break;
-			case GET_LOST:
-				pagedList = service.fetchItem(first, pageSize,ItemType.LOST);
-				break;
-			case GET_FOUND:
-				pagedList = service.fetchItem(first, pageSize,ItemType.FOUND);
-				break;
-			default:
-				LOG.warn("query type not found! , " + query);
-				break;
-			}
-
-			// rowCount
-			int dataSize = pagedList.getCount();// data.size();
-			this.setRowCount(dataSize);
-
-			// LOG.info("count >>> " + dataSize + " , pagedList.getList() >>> "
-			// + pagedList.getList().size());
-
-			return pagedList.getList();
-
-		} catch (Exception e) {
-			LOG.error("oops error encountered while paginating Item entries!!!", e);
-			e.printStackTrace();
-			return new ArrayList<Item>();
-		}
-	}
-
+    @Override
+    public List<Item> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+            Map<String, Object> filters) {
+        try {
+            PagedList<Item> pagedList;
+            switch (query) {
+                case GET_ALL_ITEM:
+                    pagedList = service.fetchItem(first, pageSize);
+                    break;
+                case GET_LOST:
+                    pagedList = service.fetchItem(first, pageSize, ItemType.LOST, searchTerm);
+                    break;
+                case GET_FOUND:
+                    pagedList = service.fetchItem(first, pageSize, ItemType.FOUND, searchTerm);
+                    break;
+                default:
+                    LOG.warn("Unknown query type: {}", query);
+                    pagedList = new PagedList<>();
+                    pagedList.setList(new ArrayList<>());
+                    pagedList.setCount(0);
+            }
+            this.setRowCount(pagedList.getCount());
+            list = pagedList.getList();
+            return list;
+        } catch (Exception e) {
+            LOG.error("Error paginating items", e);
+            return new ArrayList<>();
+        }
+    }
 }

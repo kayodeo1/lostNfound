@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Create Account &#8211; Lost &amp; Found</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0D1117;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .bg-pattern {
+            position: fixed; inset: 0; z-index: 0;
+            background: radial-gradient(ellipse at 70% 40%, rgba(16,185,129,.14) 0%, transparent 55%),
+                        radial-gradient(ellipse at 20% 80%, rgba(99,102,241,.10) 0%, transparent 50%);
+        }
+        .auth-card {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 460px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 28px 80px rgba(0,0,0,.55);
+            overflow: hidden;
+        }
+        .auth-header {
+            background: linear-gradient(135deg, #0D1117 0%, #064E3B 60%, #065F46 100%);
+            padding: 32px 28px 26px;
+            text-align: center;
+        }
+        .auth-logo {
+            width: 52px; height: 52px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+        .auth-header h1 { font-size: 1.2rem; font-weight: 800; color: #F1F5F9; margin-bottom: 4px; letter-spacing: -.02em; }
+        .auth-header p  { font-size: .82rem; color: rgba(148,163,184,.8); }
+        .auth-body { padding: 28px; }
+        .field-group { margin-bottom: 14px; }
+        .field-group label {
+            display: block; font-size: .82rem; font-weight: 600;
+            color: #374151; margin-bottom: 5px;
+        }
+        .field-group .ui-inputtext,
+        .field-group .ui-password input {
+            width: 100% !important;
+            padding: 10px 13px !important;
+            border: 1.5px solid #E2E8F0 !important;
+            border-radius: 9px !important;
+            font-size: .875rem !important;
+            font-family: 'Inter', system-ui, sans-serif !important;
+            color: #0F172A !important;
+            transition: border-color .15s, box-shadow .15s !important;
+        }
+        .field-group .ui-inputtext:focus,
+        .field-group .ui-password input:focus {
+            border-color: #10B981 !important;
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(16,185,129,.12) !important;
+        }
+        .field-group .ui-password { width: 100% !important; }
+        .btn-auth {
+            width: 100%;
+            padding: 11px !important;
+            background: linear-gradient(135deg, #10B981, #059669) !important;
+            color: #fff !important;
+            border: none !important;
+            border-radius: 10px !important;
+            font-size: .9rem !important;
+            font-weight: 700 !important;
+            font-family: 'Inter', system-ui, sans-serif !important;
+            letter-spacing: -.01em !important;
+            cursor: pointer !important;
+            margin-top: 4px !important;
+            box-shadow: 0 4px 14px rgba(16,185,129,.32) !important;
+        }
+        .auth-footer { text-align: center; margin-top: 18px; font-size: .83rem; color: #64748B; }
+        .auth-footer a { color: #059669; font-weight: 600; text-decoration: none; }
+        .auth-footer a:hover { text-decoration: underline; }
+        .hint { font-size: .75rem; color: #94A3B8; margin-top: 4px; }
+        .ui-messages { margin-bottom: 14px; border-radius: 10px !important; }
+        .ui-widget { font-family: 'Inter', system-ui, sans-serif !important; }
+    </style>
+</h:head>
+<h:body>
+    <div class="bg-pattern"/>
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">&#43;</div>
+            <h1>Create an Account</h1>
+            <p>Join the Lost &amp; Found System</p>
+        </div>
+        <div class="auth-body">
+            <h:form id="regForm">
+                <p:messages id="msgs" globalOnly="true" showDetail="true" closable="true"/>
+
+                <div class="field-group">
+                    <label for="name">Full Name</label>
+                    <p:inputText id="name" value="#{authBean.regName}"
+                        required="true" requiredMessage="Name is required"
+                        placeholder="Your full name" style="width:100%;"/>
+                    <p:message for="name"/>
+                </div>
+
+                <div class="field-group">
+                    <label for="email">Email Address</label>
+                    <p:inputText id="email" value="#{authBean.regEmail}"
+                        required="true" requiredMessage="Email is required"
+                        placeholder="you@university.edu" style="width:100%;"/>
+                    <p:message for="email"/>
+                </div>
+
+                <div class="field-group">
+                    <label for="pass">Password</label>
+                    <p:password id="pass" value="#{authBean.regPassword}"
+                        required="true" requiredMessage="Password is required"
+                        feedback="true" placeholder="Choose a strong password" style="width:100%;"/>
+                    <p:message for="pass"/>
+                </div>
+
+                <div class="field-group">
+                    <label for="confirm">Confirm Password</label>
+                    <p:password id="confirm" value="#{authBean.regConfirmPassword}"
+                        required="true" requiredMessage="Please confirm your password"
+                        feedback="false" placeholder="Repeat your password" style="width:100%;"/>
+                    <p:message for="confirm"/>
+                    <div class="hint">Passwords must match.</div>
+                </div>
+
+                <p:commandButton value="Create Account"
+                    actionListener="#{authBean.register}"
+                    process="regForm"
+                    update="msgs"
+                    styleClass="btn-auth"/>
+
+                <div class="auth-footer">
+                    Already have an account? <a href="login.xhtml">Sign in</a>
+                </div>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

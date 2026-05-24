@@ -47,6 +47,8 @@ private String location;
 private String description;
 private Date dateReported;
 private String contacts;
+private String color;
+private Long userId;
 private Date dateClaimed;
 @Enumerated(EnumType.STRING)
 private ItemType itemType;
@@ -151,6 +153,18 @@ public String getContacts() {
 }
 public void setContacts(String contacts) {
 	this.contacts = contacts;
+}
+public String getColor() {
+	return color;
+}
+public void setColor(String color) {
+	this.color = color;
+}
+public Long getUserId() {
+	return userId;
+}
+public void setUserId(Long userId) {
+	this.userId = userId;
 }
 
 }

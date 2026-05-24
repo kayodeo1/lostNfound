@@ -1,352 +1,464 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 <f:view contentType="text/html">
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lost and Found System - CSC 335</title>
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lost &amp; Found &#8211; Campus System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <ui:insert name="extraHead"/>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .container {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #F7F8FC;
+            color: #0F172A;
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* ── Sidebar ──────────────────────────────────────────── */
         .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px 0;
+            width: 240px;
+            min-height: 100vh;
+            background: #0D1117;
+            display: flex;
+            flex-direction: column;
             position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid #34495e;
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.2em;
-            color: #ecf0f1;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 5px;
-        }
-
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: #bdc3c7;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background-color: #34495e;
-            color: #ecf0f1;
-            border-left: 3px solid #3498db;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 10px;
-        }
-
-        /* Top Navigation */
-        .top-nav {
-            background-color: white;
-            padding: 12px 30px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-title {
-            font-size: 1.5em;
-            color: #2c3e50;
-            font-weight: bold;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            color: #7f8c8d;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background-color: #ecf0f1;
-            color: #2c3e50;
-        }
-
-        /* Dashboard Content */
-        .dashboard-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .course-info {
-            margin-bottom: 30px;
+            top: 0; left: 0;
+            z-index: 200;
             padding-bottom: 20px;
-            border-bottom: 2px solid #ecf0f1;
         }
-
-        .course-code {
-            color: #3498db;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 22px 18px 18px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,.05);
         }
-
-        .course-title {
-            color: #2c3e50;
-            font-size: 2em;
-            margin-bottom: 15px;
+        .sidebar-logo {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
-
-        .project-section {
-            margin-bottom: 25px;
+        .sidebar-brand-name {
+            font-size: .93rem;
+            font-weight: 700;
+            color: #F1F5F9;
+            letter-spacing: -.01em;
         }
-
-        .project-section h3 {
-            color: #34495e;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+        .sidebar-brand-sub { font-size: .7rem; color: #475569; margin-top: 1px; }
+        .sidebar-section {
+            padding: 20px 18px 6px;
+            font-size: .64rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .09em;
+            color: #334155;
         }
-
-        .project-section p {
-            line-height: 1.6;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .tech-stack {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
-        }
-
-        .team-members {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-        }
-
-        .team-members h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-
-        .member-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        .sidebar-nav { list-style: none; flex: 1; padding: 6px 10px; }
+        .sidebar-nav li + li { margin-top: 2px; }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
             gap: 10px;
+            padding: 9px 12px;
+            color: #64748B;
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: background .15s, color .15s;
         }
+        .sidebar-nav a:hover { background: rgba(255,255,255,.05); color: #CBD5E1; }
+        .sidebar-nav a.active { background: rgba(99,102,241,.15); color: #A5B4FC; }
+        .sidebar-nav .icon { width: 18px; text-align: center; }
+        .sidebar-divider { border: none; border-top: 1px solid rgba(255,255,255,.05); margin: 8px 10px; }
 
-        .member-item {
-            background-color: white;
-            padding: 12px;
-            border-radius: 4px;
-            border-left: 3px solid #3498db;
+        /* ── Shell ────────────────────────────────────────────── */
+        .shell { flex: 1; margin-left: 240px; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* ── Top bar ──────────────────────────────────────────── */
+        .topbar {
+            position: sticky;
+            top: 0; z-index: 100;
+            height: 58px;
+            background: rgba(247,248,252,.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(226,232,240,.8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            gap: 12px;
         }
-
-        .member-name {
-            font-weight: bold;
-            color: #2c3e50;
+        .topbar-title { font-size: .82rem; font-weight: 600; color: #64748B; letter-spacing: .01em; }
+        .topbar-right  { display: flex; align-items: center; gap: 10px; }
+        .user-chip {
+            display: flex; align-items: center; gap: 8px;
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 999px;
+            padding: 4px 12px 4px 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
         }
-
-        .member-id {
-            color: #7f8c8d;
-            font-size: 0.9em;
+        .user-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: #fff;
+            font-size: .76rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
         }
+        .user-name  { font-size: .83rem; font-weight: 600; color: #1E293B; }
+        .role-tag {
+            font-size: .65rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .05em;
+            padding: 2px 8px; border-radius: 999px;
+            background: #EEF2FF; color: #4338CA;
+        }
+        .role-tag.admin { background: #FFF1F2; color: #E11D48; }
 
-        /* Responsive Design */
+        .btn-logout {
+            background: transparent !important;
+            color: #64748B !important;
+            border: 1px solid #E2E8F0 !important;
+            padding: 6px 14px !important;
+            border-radius: 8px !important;
+            font-size: .8rem !important; font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all .15s !important;
+        }
+        .btn-logout:hover { background: #FEF2F2 !important; color: #DC2626 !important; border-color: #FECACA !important; }
+
+        /* ── Page content / footer ────────────────────────────── */
+        .page-content { flex: 1; padding: 28px; }
+        .footer { text-align: center; padding: 14px; font-size: .73rem; color: #94A3B8; letter-spacing: .01em; }
+
+        /* ── Cards ────────────────────────────────────────────── */
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #EAECF0;
+            box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.03);
+        }
+        .card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-title { font-size: .95rem; font-weight: 700; color: #0F172A; }
+        .card-body  { padding: 20px 24px; }
+
+        /* ── Stat cards ───────────────────────────────────────── */
+        .stats-row { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+        .stat-card {
+            flex: 1; min-width: 150px;
+            border-radius: 14px;
+            padding: 22px 24px;
+            position: relative; overflow: hidden;
+            border: none;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -18px; right: -18px;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.12);
+        }
+        .stat-number { font-size: 2.4rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
+        .stat-label  { font-size: .74rem; font-weight: 600; color: rgba(255,255,255,.72); text-transform: uppercase; letter-spacing: .07em; }
+        .stat-card.blue   { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+        .stat-card.green  { background: linear-gradient(135deg, #10B981, #059669); }
+        .stat-card.orange { background: linear-gradient(135deg, #F59E0B, #D97706); }
+
+        /* ── Badges ───────────────────────────────────────────── */
+        .badge {
+            display: inline-flex; align-items: center;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: .7rem; font-weight: 600; letter-spacing: .01em;
+        }
+        .badge-blue   { background: #EFF6FF; color: #1D4ED8; }
+        .badge-green  { background: #ECFDF5; color: #059669; }
+        .badge-red    { background: #FFF1F2; color: #E11D48; }
+        .badge-amber  { background: #FFFBEB; color: #B45309; }
+        .badge-slate  { background: #F1F5F9; color: #475569; }
+        .badge-purple { background: #F5F3FF; color: #6D28D9; }
+        .badge-count  { background: #EF4444; color: #fff; padding: 1px 7px; margin-left: 6px; }
+
+        /* ── Buttons ──────────────────────────────────────────── */
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: .85rem; font-weight: 600;
+            border: none; cursor: pointer;
+            letter-spacing: -.01em;
+            transition: all .15s;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: #6366F1; color: #fff; box-shadow: 0 2px 8px rgba(99,102,241,.28); }
+        .btn-primary:hover { background: #4F46E5; box-shadow: 0 4px 14px rgba(99,102,241,.38); }
+        .btn-success { background: #059669; color: #fff; box-shadow: 0 2px 8px rgba(5,150,105,.24); }
+        .btn-success:hover { background: #047857; }
+        .btn-danger  { background: #E11D48; color: #fff; box-shadow: 0 2px 8px rgba(225,29,72,.24); }
+        .btn-danger:hover  { background: #BE123C; }
+        .btn-neutral { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; box-shadow: none; }
+        .btn-neutral:hover { background: #E2E8F0; transform: none; }
+        .btn-sm { padding: 6px 13px; font-size: .78rem; border-radius: 8px; }
+
+        /* ── Form fields ──────────────────────────────────────── */
+        .field-group { margin-bottom: 14px; }
+        .field-label { display: block; font-size: .82rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
+        .req { color: #E11D48; }
+
+        /* ── Item cards ───────────────────────────────────────── */
+        .item-card {
+            background: #fff;
+            border: 1px solid #EAECF0;
+            border-radius: 14px; overflow: hidden;
+            display: flex; flex-direction: column; height: 100%;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .item-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.09); }
+        .item-card-img   { width: 100%; height: 140px; object-fit: cover; }
+        .item-card-body  { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+        .item-card-name  { font-size: .92rem; font-weight: 700; color: #0F172A; margin-bottom: 5px; }
+        .item-card-desc  {
+            font-size: .8rem; color: #64748B; line-height: 1.55; flex: 1;
+            overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 10px;
+        }
+        .item-card-tags    { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+        .item-card-actions { display: flex; gap: 6px; }
+
+        /* ── Empty state ──────────────────────────────────────── */
+        .empty-state { text-align: center; padding: 56px 20px; color: #94A3B8; }
+        .empty-state-icon { font-size: 2.4rem; margin-bottom: 10px; }
+        .empty-state-text { font-size: .9rem; }
+
+        /* ── Dialog form sections ─────────────────────────────── */
+        .dialog-section { background: #F8FAFC; border-radius: 12px; padding: 18px; border: 1px solid #EAECF0; }
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+        .form-col { flex: 1; min-width: 180px; }
+
+        /* ── Detail grid ──────────────────────────────────────── */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            background: #F8FAFC;
+            border: 1px solid #EAECF0;
+            border-radius: 12px;
+            padding: 18px;
+        }
+        .detail-cell .label { font-size: .69rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+        .detail-cell .val   { font-size: .88rem; color: #0F172A; font-weight: 500; }
+        .detail-full { grid-column: 1 / -1; }
+
+        /* ── Plain HTML tables (My Activity) ─────────────────── */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead th {
+            text-align: left;
+            font-size: .69rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .07em;
+            color: #94A3B8;
+            padding: 11px 18px;
+            background: transparent;
+            border-bottom: 1px solid #F1F5F9;
+            white-space: nowrap;
+        }
+        .data-table tbody td {
+            padding: 14px 18px;
+            font-size: .875rem; color: #1E293B;
+            border-bottom: 1px solid #F8FAFC;
+            vertical-align: middle;
+        }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .data-table tbody tr { transition: background .1s; }
+        .data-table tbody tr:hover td { background: #F8FAFC; }
+
+        /* ── PrimeFaces dataTable (list.xhtml, admin.xhtml) ──── */
+        .ui-widget { font-family: 'Inter', system-ui, sans-serif !important; }
+
+        .ui-datatable table { border-collapse: collapse !important; }
+        .ui-datatable thead th.ui-state-default {
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 1px solid #F1F5F9 !important;
+            font-size: .69rem !important; font-weight: 700 !important;
+            text-transform: uppercase !important; letter-spacing: .07em !important;
+            color: #94A3B8 !important;
+            padding: 11px 18px !important;
+            white-space: nowrap !important;
+        }
+        .ui-datatable thead th.ui-state-default .ui-column-title { color: #94A3B8 !important; }
+        .ui-datatable tbody td {
+            border: none !important;
+            border-bottom: 1px solid #F8FAFC !important;
+            padding: 14px 18px !important;
+            font-size: .875rem !important;
+            vertical-align: middle !important;
+        }
+        .ui-datatable .ui-widget-content { border: none !important; }
+        .ui-datatable tbody tr:last-child td { border-bottom: none !important; }
+        .ui-datatable tbody tr.ui-datatable-odd  { background: #fff !important; }
+        .ui-datatable tbody tr.ui-datatable-even { background: #fff !important; }
+        .ui-datatable tbody tr:hover td { background: #F8FAFC !important; }
+
+        /* paginator */
+        .ui-datatable .ui-paginator {
+            background: transparent !important;
+            border: none !important;
+            border-top: 1px solid #F1F5F9 !important;
+            padding: 12px 18px !important;
+        }
+        .ui-paginator .ui-paginator-page,
+        .ui-paginator .ui-paginator-first,
+        .ui-paginator .ui-paginator-prev,
+        .ui-paginator .ui-paginator-next,
+        .ui-paginator .ui-paginator-last {
+            border-radius: 8px !important;
+            border: 1px solid #E2E8F0 !important;
+            margin: 0 2px !important;
+            font-size: .8rem !important;
+            min-width: 32px !important; height: 32px !important;
+            line-height: 30px !important;
+        }
+        .ui-paginator .ui-state-active { background: #6366F1 !important; color: #fff !important; border-color: #6366F1 !important; }
+        .ui-paginator .ui-paginator-current { font-size: .8rem !important; color: #64748B !important; }
+        .ui-selectonemenu.ui-paginator-rpp-options { border: 1.5px solid #E2E8F0 !important; border-radius: 8px !important; font-size: .8rem !important; }
+
+        /* tabs */
+        .ui-tabview { background: transparent !important; border: none !important; }
+        .ui-tabs .ui-tabs-nav { background: transparent !important; border: none !important; border-bottom: 1px solid #F1F5F9 !important; padding: 0 6px !important; }
+        .ui-tabs .ui-tabs-nav li { border: none !important; background: transparent !important; margin: 0 2px !important; }
+        .ui-tabs .ui-tabs-nav li a {
+            color: #64748B !important; font-weight: 600 !important;
+            font-size: .85rem !important; padding: 12px 16px !important;
+            border-radius: 0 !important; border: none !important;
+            transition: color .15s !important;
+        }
+        .ui-tabs .ui-tabs-nav li a:hover { color: #0F172A !important; }
+        .ui-tabs .ui-tabs-nav li.ui-tabs-selected a { color: #6366F1 !important; box-shadow: inset 0 -2px 0 #6366F1 !important; }
+        .ui-tabs .ui-tabs-panel { padding: 20px 0 0 !important; background: transparent !important; }
+
+        /* inputs */
+        .ui-inputtext {
+            border: 1.5px solid #E2E8F0 !important;
+            border-radius: 9px !important;
+            padding: 9px 12px !important;
+            font-size: .875rem !important;
+            color: #0F172A !important;
+            background: #fff !important;
+            transition: border-color .15s, box-shadow .15s !important;
+        }
+        .ui-inputtext:focus { border-color: #6366F1 !important; outline: none !important; box-shadow: 0 0 0 3px rgba(99,102,241,.12) !important; }
+        .ui-selectonemenu { border: 1.5px solid #E2E8F0 !important; border-radius: 9px !important; }
+
+        /* messages */
+        .ui-messages-info  { border-radius: 10px !important; }
+        .ui-messages-error { border-radius: 10px !important; }
+
+        /* dialogs */
+        .ui-dialog { border-radius: 14px !important; border: 1px solid #EAECF0 !important; box-shadow: 0 20px 60px rgba(0,0,0,.16) !important; overflow: visible !important; }
+        .ui-dialog .ui-dialog-titlebar { background: #0D1117 !important; color: #F1F5F9 !important; font-weight: 700 !important; font-size: .9rem !important; padding: 16px 20px !important; border-radius: 14px 14px 0 0 !important; }
+        .ui-dialog .ui-dialog-titlebar-close { color: #64748B !important; }
+        .ui-dialog .ui-dialog-content { padding: 20px !important; border-radius: 0 0 14px 14px !important; max-height: 75vh !important; overflow-y: auto !important; }
+
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .container {
-                flex-direction: column;
-            }
-
-            .top-nav {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-
-            .nav-links {
-                justify-content: center;
-            }
-
-            .member-list {
-                grid-template-columns: 1fr;
-            }
+            .sidebar { width: 100%; height: auto; position: relative; min-height: unset; }
+            .shell   { margin-left: 0; }
+            body     { flex-direction: column; }
         }
     </style>
-<h:head></h:head>
+</h:head>
+
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <h2>Lost &amp; Found System</h2>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a class="sidebar-brand" href="#{request.contextPath}/view2.xhtml">
+            <div class="sidebar-logo">&#128269;</div>
+            <div>
+                <div class="sidebar-brand-name">Lost &amp; Found</div>
+                <div class="sidebar-brand-sub">Campus System</div>
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="/lostNfound/lostNfound_template.xhtml" class="active">Dashboard</a></li>
-                <li><a href="/lostNfound/view2.xhtml">LostNFound</a></li>
-                <li><a href="/lostNfound/list.xhtml">Admin/Management</a></li>
-                <li><a href="/lostNfound/lostNfound_template.xhtml#team">Group Members</a></li>
-            </ul>
-        </nav>
+        </a>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Navigation -->
-            <div class="top-nav">
-                <div class="nav-title">CSC 335 Software Engineering Project</div>
-                <div class="nav-links">
-                    <a href="/lostNfound/lostNfound_template.xhtml">Dashboard</a>
-                    <a href="/lostNfound/view2.xhtml">App</a>
-                    <a href="/lostNfound/list.xhtml">Admin</a>
-                    <a href="/lostNfound/lostNfound_template.xhtml#team">Team</a>
-                </div>
-            </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-section">Navigation</li>
+            <li>
+                <a href="#{request.contextPath}/view2.xhtml">
+                    <span class="icon">&#127968;</span> Browse Items
+                </a>
+            </li>
 
-            <!-- Page Content Area -->
-            <ui:insert name="content">
-                <!-- Default Dashboard Content -->
-                <div class="dashboard-content">
-                    <div class="course-info">
-                        <div class="course-code">CSC 335</div>
-                        <h1 class="course-title">Software Engineering</h1>
-                    </div>
+            <ui:fragment rendered="#{authBean.admin}">
+                <hr class="sidebar-divider"/>
+                <li class="sidebar-section">Admin</li>
+                <li>
+                    <a href="#{request.contextPath}/admin.xhtml">
+                        <span class="icon">&#128202;</span> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#{request.contextPath}/list.xhtml">
+                        <span class="icon">&#128221;</span> Manage Items
+                    </a>
+                </li>
+            </ui:fragment>
+        </ul>
+    </aside>
 
-                    <div class="project-section">
-                        <h3>Project Description</h3>
-                        <p>A web-based lost and found management system for educational institutions built with JSF, PrimeFaces, and EJB. This application enables students to report lost items, upload found items with photos, and browse through available items with comprehensive search functionality.</p>
-                    </div>
+    <!-- Main shell -->
+    <div class="shell">
 
-                    <div class="project-section">
-                        <h3>Project Motivation</h3>
-                        <p>Educational institutions often struggle with managing lost and found items efficiently. Traditional paper-based systems are prone to errors and difficult to manage. Our digital solution provides a centralized platform where students can easily report and search for lost items, while administrators can efficiently manage the entire process.</p>
-                        <p>This system reduces the time spent searching for lost items and increases the likelihood of successful item recovery, creating a more organized and helpful campus environment.</p>
-                    </div>
-
-                    <div class="tech-stack">
-                        <h3>Technology Stack</h3>
-                        <p><strong>Frontend:</strong> JSF 2.2, PrimeFaces 8.0</p>
-                        <p><strong>Backend:</strong> Java EE 7, EJB 3.2</p>
-                        <p><strong>Dependency Injection:</strong> CDI 1.2</p>
-                        <p><strong>Server:</strong> Apache TomEE Plume 7.1.2</p>
-                        <p><strong>Database:</strong> JPA/OpenJPA with H2 for development</p>
-                    </div>
-
-                    <div class="project-section">
-                        <h3>Key Features</h3>
-                        <p>• View reported lost or found items in a user-friendly grid layout</p>
-                        <p>• Advanced search functionality with keyword filtering</p>
-                        <p>• Easy item reporting system for both lost and found items</p>
-                        <p>• Administrative interface for item approval and rejection</p>
-                        <p>• Image upload and preview capabilities</p>
-                        <p>• Clean, responsive UI design with modern web standards</p>
-                    </div>
-
-                    <div class="team-members">
-                        <h3>Group Members</h3>
-                        <div class="member-list">
-                            <div class="member-item">
-                                <div class="member-name">Akintunde Abdulsalam</div>
-                                <div class="member-id">E047451</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Abdulganiyu Abdulrahmon Demola</div>
-                                <div class="member-id">E047370</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Adiamo Sodiq</div>
-                                <div class="member-id">E046135</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Anetekhai Daniel Oluwaseyi</div>
-                                <div class="member-id">E045437</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Olaniyi Saheed Olalekan</div>
-                                <div class="member-id">E047502</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Oduah Nkem Oluwatoyin</div>
-                                <div class="member-id">E048166</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Oluremi Akorede</div>
-                                <div class="member-id">E045745</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Oginni Oluwafemi</div>
-                                <div class="member-id">E045939</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Ohiremen Emmanuel Osirama</div>
-                                <div class="member-id">E046070</div>
-                            </div>
-                            <div class="member-item">
-                                <div class="member-name">Yusuf Basit</div>
-                                <div class="member-id">E046253</div>
-                            </div>
+        <!-- Top bar -->
+        <header class="topbar">
+            <div class="topbar-right">
+                <ui:fragment rendered="#{authBean.loggedIn}">
+                    <div class="user-chip">
+                        <div class="user-avatar">
+                            #{authBean.loggedInUser.name.substring(0,1).toUpperCase()}
                         </div>
+                        <span class="user-name">#{authBean.loggedInUser.name}</span>
+                        <span class="role-tag #{authBean.admin ? 'admin' : ''}">
+                            #{authBean.loggedInUser.role}
+                        </span>
                     </div>
-                </div>
-            </ui:insert>
+                    <h:form style="margin:0;">
+                        <p:commandButton value="Logout"
+                            actionListener="#{authBean.logout}"
+                            immediate="true"
+                            styleClass="btn-logout"/>
+                    </h:form>
+                </ui:fragment>
+            </div>
+        </header>
+
+        <!-- Page content -->
+        <main class="page-content">
+            <ui:insert name="content"/>
         </main>
+
+        <footer class="footer">
+            Olasunkanmi Kofoworola
+        </footer>
     </div>
 </body>
 </f:view>

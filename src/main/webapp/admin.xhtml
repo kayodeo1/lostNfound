@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <f:metadata>
+        <f:viewAction action="#{adminBean.loadData}" onPostback="false"/>
+    </f:metadata>
+</h:head>
+<h:body>
+<ui:composition template="/lostNfound_template.xhtml">
+<ui:define name="content">
+
+    <!-- Page header -->
+    <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.4rem; font-weight:800; color:#1E293B;">Admin Dashboard</h2>
+        <p style="font-size:.85rem; color:#64748B; margin-top:2px;">Review and manage student claims for lost &amp; found items.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card blue">
+            <div class="stat-number">#{adminBean.lostCount}</div>
+            <div class="stat-label">Lost Items</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-number">#{adminBean.foundCount}</div>
+            <div class="stat-label">Found Items</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-number">#{adminBean.pendingClaimsCount}</div>
+            <div class="stat-label">Pending Claims</div>
+        </div>
+    </div>
+
+    <!-- Claims tabs -->
+    <h:form id="adminForm">
+        <p:messages id="adminMsgs" globalOnly="true" showDetail="true" style="margin-bottom:14px;"/>
+
+        <div class="card" style="padding:0; overflow:hidden;">
+            <p:tabView style="border:none; background:transparent;">
+
+                <!-- ══ PENDING CLAIMS ══ -->
+                <p:tab title="Pending Claims">
+                    <p:dataTable id="pendingTable" var="cd"
+                        value="#{adminBean.pendingClaimDetails}"
+                        emptyMessage="No pending claims."
+                        paginator="true" rows="10"
+                        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                        style="width:100%;">
+
+                        <p:column headerText="Item" style="font-weight:600;">
+                            #{cd.itemName}
+                        </p:column>
+
+                        <p:column headerText="Category">
+                            <span class="badge badge-blue">#{cd.itemCategory}</span>
+                        </p:column>
+
+                        <p:column headerText="Claimant">
+                            <div style="font-weight:600; color:#1E293B;">#{cd.ownerName}</div>
+                            <div style="font-size:.78rem; color:#64748B;">#{cd.ownerEmail}</div>
+                        </p:column>
+
+                        <p:column headerText="Proof" style="max-width:200px;">
+                            <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.83rem; color:#374151;"
+                                 title="#{cd.claim.proof}">#{cd.claim.proof}</div>
+                        </p:column>
+
+                        <p:column headerText="Submitted" style="white-space:nowrap;">
+                            <h:outputText value="#{cd.claim.createdAt}">
+                                <f:convertDateTime pattern="dd MMM yyyy, HH:mm"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Actions" style="white-space:nowrap;">
+                            <p:commandButton value="Approve"
+                                actionListener="#{adminBean.selectClaim(cd.claim)}"
+                                process="@this" update="dlgApprove" oncomplete="PF('dlgApprove').show()"
+                                styleClass="btn btn-success btn-sm" style="margin-right:6px;"/>
+                            <p:commandButton value="Reject"
+                                actionListener="#{adminBean.selectClaim(cd.claim)}"
+                                process="@this" update="dlgReject" oncomplete="PF('dlgReject').show()"
+                                styleClass="btn btn-danger btn-sm"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+                <!-- ══ CLAIM HISTORY ══ -->
+                <p:tab title="Claim History">
+                    <p:dataTable id="historyTable" var="cd"
+                        value="#{adminBean.resolvedClaimDetails}"
+                        emptyMessage="No resolved claims yet."
+                        paginator="true" rows="10"
+                        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                        style="width:100%;">
+
+                        <p:column headerText="Item" style="font-weight:600;">#{cd.itemName}</p:column>
+
+                        <p:column headerText="Category">
+                            <span class="badge badge-blue">#{cd.itemCategory}</span>
+                        </p:column>
+
+                        <p:column headerText="Claimant">
+                            <div style="font-weight:600;">#{cd.ownerName}</div>
+                            <div style="font-size:.78rem; color:#64748B;">#{cd.ownerEmail}</div>
+                        </p:column>
+
+                        <p:column headerText="Decision">
+                            <span class="badge #{cd.claim.status == 'APPROVED' ? 'badge-green' : 'badge-red'}">
+                                #{cd.claim.status}
+                            </span>
+                        </p:column>
+
+                        <p:column headerText="Date" style="white-space:nowrap; font-size:.83rem; color:#64748B;">
+                            <h:outputText value="#{cd.claim.createdAt}">
+                                <f:convertDateTime pattern="dd MMM yyyy"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Reason / Note">
+                            <div style="font-size:.82rem; color:#64748B; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
+                                 title="#{cd.claim.rejectionReason}">
+                                #{not empty cd.claim.rejectionReason ? cd.claim.rejectionReason : '—'}
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </div>
+    </h:form>
+
+
+    <!-- ══ APPROVE DIALOG ══ -->
+    <p:dialog id="dlgApprove" widgetVar="dlgApprove" header="Approve Claim"
+        modal="true" width="420" resizable="false" showEffect="fade" hideEffect="fade">
+        <h:form id="approveForm">
+            <p:messages id="approveMsgs" globalOnly="true"/>
+            <div style="padding:4px 0 14px;">
+                <div style="font-size:.85rem; color:#374151; margin-bottom:12px; background:#F0FDF4; border:1px solid #86EFAC; border-radius:8px; padding:10px 14px;">
+                    Approving this claim will mark the item as <strong>claimed</strong> and close it.
+                </div>
+                <label class="field-label">Release Notes <small style="color:#94A3B8; font-weight:400;">(optional)</small></label>
+                <p:inputTextarea value="#{adminBean.approvalNotes}" rows="3"
+                    style="width:100%;"
+                    placeholder="Add any notes about releasing this item…"/>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <p:commandButton value="Confirm Approval"
+                    actionListener="#{adminBean.approveClaim}"
+                    process="approveForm"
+                    update="adminForm,approveForm,adminMsgs"
+                    oncomplete="PF('dlgApprove').hide();"
+                    styleClass="btn btn-success"/>
+                <p:commandButton value="Cancel"
+                    onclick="PF('dlgApprove').hide(); return false;" type="button"
+                    styleClass="btn btn-neutral"/>
+            </div>
+        </h:form>
+    </p:dialog>
+
+    <!-- ══ REJECT DIALOG ══ -->
+    <p:dialog id="dlgReject" widgetVar="dlgReject" header="Reject Claim"
+        modal="true" width="420" resizable="false" showEffect="fade" hideEffect="fade">
+        <h:form id="rejectForm">
+            <p:messages id="rejectMsgs" globalOnly="true"/>
+            <div style="padding:4px 0 14px;">
+                <div style="font-size:.85rem; color:#374151; margin-bottom:12px; background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:10px 14px;">
+                    Please provide a clear reason. The student will see this message.
+                </div>
+                <label class="field-label">Reason for Rejection <span class="req">*</span></label>
+                <p:inputTextarea id="rejectReason" value="#{adminBean.rejectionReason}" rows="3"
+                    required="true" requiredMessage="A reason is required."
+                    style="width:100%;"
+                    placeholder="e.g. Proof provided does not match item description…"/>
+                <p:message for="rejectReason"/>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <p:commandButton value="Reject Claim"
+                    actionListener="#{adminBean.rejectClaim}"
+                    process="rejectForm"
+                    update="adminForm,rejectForm,adminMsgs"
+                    oncomplete="if (!args.validationFailed) PF('dlgReject').hide();"
+                    styleClass="btn btn-danger"/>
+                <p:commandButton value="Cancel"
+                    onclick="PF('dlgReject').hide(); return false;" type="button"
+                    styleClass="btn btn-neutral"/>
+            </div>
+        </h:form>
+    </p:dialog>
+
+</ui:define>
+</ui:composition>
+</h:body>
+</html>

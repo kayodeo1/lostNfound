@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
@@ -36,344 +37,244 @@ import com.kayode.lostNfound.model.ItemStatus;
 import com.kayode.lostNfound.model.ItemType;
 import com.kayode.lostNfound.model.Media;
 import com.kayode.lostNfound.model.MediaType;
+import com.kayode.lostNfound.model.User;
 import com.kayode.lostNfound.service.ItemService;
 import com.kayode.lostNfound.service.MediaService;
 
 @Named("viewBean")
 @ViewScoped
 public class viewBean implements Serializable {
-	public static final String APP_BASE_NAME = Constants.APP_BASE_NAME;
-	private static final String VIEW_URL = APP_BASE_NAME + "/view2.xhtml?faces-redirect=true";
 
-	@Inject
-	private ItemService itemService;
-	private Item entry = new Item();
-	private LazyDataModel<Item> lazyModel;
-	private LazyDataModel<Item> lazyModel1;
-	private LazyDataModel<Item> lazyModel2;
-	private static Logger LOG = LoggerFactory.getLogger(ItemBean.class);
-	private List<Category> categories;
-	private UploadedFile file;
-	private UploadedFile file2;
-	private String fileName;
-	private String fileExtension;
-	private Path previewPath;
-	private Media entryMedia;
-	@Inject
-	MediaService mediaService;
+    private static final Logger LOG = LoggerFactory.getLogger(viewBean.class);
+    private static final String VIEW_URL = Constants.APP_BASE_NAME + "/view2.xhtml?faces-redirect=true";
 
-	@PostConstruct
-	public void init() {
-		System.out.println("view bean invoked!!!");
-		setCategories(Arrays.asList(Category.values()));
+    @Inject private ItemService itemService;
+    @Inject private MediaService mediaService;
 
-	}
+    // Selected item for the detail dialog
+    private Item entry = new Item();
+    private Media entryMedia;
 
-	public void markFound() {
-		System.out.println("claiming....."+entry.getName());
-		this.entry.setItemStatus(ItemStatus.RESOLVED);
-		this.entry.setItemType(ItemType.CLAIMED);
-		this.entry.setDateClaimed(new Date());
-		itemService.updateItem(this.entry);
-		System.out.println("claimed.");
-		Messages.addFlashGlobalInfo(this.entry.getName() + "has been claimed ");
-		try {
-			Faces.redirect(VIEW_URL);
-		} catch (IOException ex) {
-			Messages.addFlashGlobalInfo(this.entry.getName() + "claim failed ");
-			ex.printStackTrace();
-		} 
+    // Separate form objects for the report dialog
+    private Item foundEntry = new Item();
+    private Item lostEntry  = new Item();
 
-	}
+    // File uploads (separate per form tab)
+    private UploadedFile foundFile;
+    private UploadedFile lostFile;
+    private String foundFileName;
+    private String lostFileName;
 
-	public void lost() {
-		entry.setItemType(ItemType.LOST);
-		entry.setItemStatus(ItemStatus.PENDING);
-		if (file2 == null) {
-			itemService.createItem(entry);
-			Messages.addFlashGlobalInfo("lost item reported sccessfully");
-			try {
-				Faces.redirect(VIEW_URL);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return;
-		}
-		Media m = new Media();
-		m.setIdentifier(fileName);
-		m.setExtension(extractFileExtension(fileName));
-		m.setMediaType(getMediaType(m.getExtension()));
-		itemService.createItem(entry, m);
-		Messages.addFlashGlobalInfo("lost item reported sccessfully");
-		try {
-			Faces.redirect(VIEW_URL);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    // Lazy models for Found / Lost tabs and admin all-items view
+    private LazyDataModel<Item> lazyModelFound;
+    private LazyDataModel<Item> lazyModelLost;
+    private LazyDataModel<Item> lazyModelAll;
 
-		return;
-	}
+    // My Reports
+    private List<Item> myItems;
 
-	public void found() {
-		System.out.println(entry.getDateReported());
-		if (file == null) {
-			Messages.addFlashGlobalError("upload a file");
+    // Search
+    private String searchTerm;
 
-			return;
-		}
-		Media m = new Media();
-		m.setIdentifier(fileName);
-		m.setExtension(extractFileExtension(fileName));
-		m.setMediaType(getMediaType(m.getExtension()));
-		entry.setItemType(ItemType.FOUND);
-		entry.setItemStatus(ItemStatus.PENDING);
-		itemService.createItem(entry, m);
-		Messages.addFlashGlobalInfo("item reported sccessfully");
-		try {
-			Faces.redirect(VIEW_URL);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    // Form data
+    private List<Category> categories;
 
-	}
+    @PostConstruct
+    public void init() {
+        categories = Arrays.asList(Category.values());
+    }
 
-	public void clear() {
-		this.entry = new Item();
-		this.entryMedia = new Media();
-	}
+    // Called by f:viewAction on view2.xhtml and list.xhtml
+    public void listItem() {
+        lazyModelFound = new ItemLazyDataModel(itemService, QueryType.GET_FOUND, searchTerm);
+        lazyModelLost  = new ItemLazyDataModel(itemService, QueryType.GET_LOST,  searchTerm);
+        lazyModelAll   = new ItemLazyDataModel(itemService, QueryType.GET_ALL_ITEM);
+        loadMyItems();
+    }
 
-	public MediaType getMediaType(String extension) {
-		Set<String> imageExtensions = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif"));
+    public void applySearch() {
+        listItem();
+    }
 
-		Set<String> videoExtensions = new HashSet<>(Arrays.asList("mp4", "mov", "wmv", "avi", "mkv", "webm"));
+    public void clearSearch() {
+        searchTerm = null;
+        listItem();
+    }
 
-		if (imageExtensions.contains(extension)) {
-			return MediaType.IMAGE;
-		} else if (videoExtensions.contains(extension)) {
-			return MediaType.VIDEO;
-		} else {
-			return null;
-		}
+    public void loadMyItems() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+        if (session == null) return;
+        User u = (User) session.getAttribute("loggedInUser");
+        if (u == null) return;
+        myItems = itemService.fetchItemsByUserId(u.getId());
+    }
 
-	}
+    public void loadEntry(Item e) {
+        this.entry      = e;
+        this.entryMedia = mediaService.findMediaForContent(e.getId());
+    }
 
-	public void handleFileUpload(FileUploadEvent event) {
-		this.file = event.getFile();
-		if (file != null && file.getSize() > 0) {
-			try {
-				fileName = getFileIdentifier() + file.getFileName();
-				System.out.println(fileName);
-				fileName = fileName.replaceAll("[\\s#%&?+:;=@$^(){}\\[\\]<>,'\"]", "_");
-				InputStream input = file.getInputstream();
-				String uploadDirectory = FacesContext.getCurrentInstance().getExternalContext()
-						.getRealPath("/resources/uploads/");
-				this.previewPath = Paths.get(uploadDirectory, fileName);
-				System.out.println(previewPath);
-				Files.copy(input, previewPath, StandardCopyOption.REPLACE_EXISTING);
+    public void createNewItemView() {
+        foundEntry   = new Item();
+        lostEntry    = new Item();
+        foundFile    = null;
+        lostFile     = null;
+        foundFileName = null;
+        lostFileName  = null;
+    }
 
-			} catch (IOException e) {
-				// TODO
-			}
-		} else {
-			// TODO
-		}
+    public void clear() {
+        entry      = new Item();
+        entryMedia = null;
+    }
 
-	}
+    // ── Report a FOUND item ────────────────────────────────────────────────
 
-	public void handleFileUpload2(FileUploadEvent event) {
-		this.file2 = event.getFile();
-		if (file2 != null && file2.getSize() > 0) {
-			try {
-				fileName = getFileIdentifier() + file2.getFileName();
-				System.out.println(fileName);
-				fileName = fileName.replaceAll("[\\s#%&?+:;=@$^(){}\\[\\]<>,'\"]", "_");
-				InputStream input = file2.getInputstream();
-				String uploadDirectory = FacesContext.getCurrentInstance().getExternalContext()
-						.getRealPath("/resources/uploads/");
-				this.previewPath = Paths.get(uploadDirectory, fileName);
-				System.out.println(previewPath);
-				Files.copy(input, previewPath, StandardCopyOption.REPLACE_EXISTING);
+    public void found() {
+        if (foundFile == null) {
+            Messages.addGlobalError("Please upload a photo or video of the item.");
+            return;
+        }
+        applyCurrentUser(foundEntry);
+        foundEntry.setItemType(ItemType.FOUND);
+        foundEntry.setItemStatus(ItemStatus.PENDING);
 
-			} catch (IOException e) {
-				// TODO
-			}
-		} else {
-			// TODO
-		}
+        Media m = buildMedia(foundFileName);
+        itemService.createItem(foundEntry, m);
+        LOG.info("Found item reported: {}", foundEntry.getName());
+        Messages.addFlashGlobalInfo("Found item reported successfully.");
+        foundEntry = new Item();
+        foundFile  = null;
+        try { Faces.redirect(VIEW_URL); } catch (IOException e) { LOG.error("Redirect failed", e); }
+    }
 
-	}
+    // ── Report a LOST item ─────────────────────────────────────────────────
 
-	private String extractFileExtension(String fileName) {
-		if (fileName == null || fileName.isEmpty()) {
-			return null;
-		}
-		int lastDotIndex = fileName.lastIndexOf('.');
-		if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
-			String extension = fileName.substring(lastDotIndex + 1).toLowerCase();
-			return extension;
-		}
-		return null; // No extension found
-	}
+    public void lost() {
+        applyCurrentUser(lostEntry);
+        lostEntry.setItemType(ItemType.LOST);
+        lostEntry.setItemStatus(ItemStatus.PENDING);
 
-	public void loadEntry(Item e) {
-		System.out.println(e.getName());
-		this.entry = e;
-		this.entryMedia = mediaService.findMediaForContent(e.getId());
-	}
+        if (lostFile == null) {
+            itemService.createItem(lostEntry);
+        } else {
+            Media m = buildMedia(lostFileName);
+            itemService.createItem(lostEntry, m);
+        }
+        LOG.info("Lost item reported: {}", lostEntry.getName());
+        Messages.addFlashGlobalInfo("Lost item reported successfully.");
+        lostEntry = new Item();
+        lostFile  = null;
+        try { Faces.redirect(VIEW_URL); } catch (IOException e) { LOG.error("Redirect failed", e); }
+    }
 
-	public void createNewItemView() throws IOException {
-		LOG.info("createNewItemView invoked");
-		this.entry = new Item();
-	}
+    // ── File upload handlers ───────────────────────────────────────────────
 
-	public String getDisplayImage(Category c) {
-		switch (c) {
-		case GADGET:
-			return "lostNfound_gadget.jpg";
-		case ID_CARD:
-			return "lostNfound_id_card.jpg";
-		case BOOK:
-			return "lostNfound_books.jpg";
-		case CLOTHING:
-			return "lostNfound_clothing.jpg";
-		case ELECTRONICS:
-			return "lostNfound_electronics.jpg";
-		case ATM_CARD:
-			return "lostNfound_atm_card.jpg";
-		case KEYS:
-			return "lostNfound_keys.jpg";
-		case MATERIALS:
-			return "lostNfound_materials.jpg";
-		default:
-			return "lostNfound.png";
+    public void handleFoundFileUpload(FileUploadEvent event) {
+        this.foundFile     = event.getFile();
+        this.foundFileName = saveUpload(event.getFile());
+    }
 
-		}
+    public void handleLostFileUpload(FileUploadEvent event) {
+        this.lostFile     = event.getFile();
+        this.lostFileName = saveUpload(event.getFile());
+    }
 
-	}
+    private String saveUpload(UploadedFile file) {
+        if (file == null || file.getSize() == 0) return null;
+        try {
+            String name = "lostNfound_" + new Date().getTime() + "_" + file.getFileName();
+            name = name.replaceAll("[\\s#%&?+:;=@$^(){}\\[\\]<>,'\"]", "_");
+            String dir  = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/uploads/");
+            Files.copy(file.getInputstream(), Paths.get(dir, name), StandardCopyOption.REPLACE_EXISTING);
+            return name;
+        } catch (IOException e) {
+            LOG.error("File upload failed", e);
+            return null;
+        }
+    }
 
-	public void listItem() {
-		LOG.info("listItem invoked!!!");
-		try {
-			// SecurityUtils.getSubject().checkRole("MDOPS");
-			Messages.addFlashGlobalInfo("loaded items ");
+    // ── Helpers ────────────────────────────────────────────────────────────
 
-			setLazyModel(new ItemLazyDataModel(itemService, QueryType.GET_ALL_ITEM));
-			setLazyModel1(new ItemLazyDataModel(itemService, QueryType.GET_FOUND));
-			setLazyModel2(new ItemLazyDataModel(itemService, QueryType.GET_LOST));
-		} catch (Exception e) {
-			Messages.addGlobalError("oops error encountered while fetching entries!");
-			LOG.error("oops error encountered while fetching entries!", e.fillInStackTrace());
-			e.printStackTrace(); //
-		}
-	}
+    private void applyCurrentUser(Item item) {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+        if (session != null && session.getAttribute("loggedInUser") != null) {
+            User u = (User) session.getAttribute("loggedInUser");
+            item.setUserId(u.getId());
+        }
+    }
 
-	public String getFileIdentifier() {
-		Date date = new Date();
-		String fileName = String.format("lostNfound_media_" + +date.getTime());
-		System.out.println(fileName);
-		return fileName;
-	}
+    private Media buildMedia(String fileName) {
+        Media m = new Media();
+        m.setIdentifier(fileName);
+        String ext = extractExtension(fileName);
+        m.setExtension(ext);
+        m.setMediaType(resolveMediaType(ext));
+        return m;
+    }
 
-	public LazyDataModel<Item> getLazyModel() {
-		return lazyModel;
-	}
+    private String extractExtension(String fileName) {
+        if (fileName == null) return null;
+        int dot = fileName.lastIndexOf('.');
+        return (dot > 0 && dot < fileName.length() - 1)
+            ? fileName.substring(dot + 1).toLowerCase()
+            : null;
+    }
 
-	public void setLazyModel(LazyDataModel<Item> lazyModel) {
-		this.lazyModel = lazyModel;
-	}
+    private MediaType resolveMediaType(String ext) {
+        Set<String> imgs   = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif"));
+        Set<String> videos = new HashSet<>(Arrays.asList("mp4", "mov", "wmv", "avi", "mkv", "webm"));
+        if (ext == null) return null;
+        if (imgs.contains(ext))   return MediaType.IMAGE;
+        if (videos.contains(ext)) return MediaType.VIDEO;
+        return null;
+    }
 
-	public Item getEntry() {
-		return entry;
-	}
+    public String getDisplayImage(Category c) {
+        if (c == null) return "lostNfound.png";
+        switch (c) {
+            case GADGET:      return "lostNfound_gadget.jpg";
+            case ID_CARD:     return "lostNfound_id_card.jpg";
+            case BOOK:        return "lostNfound_books.jpg";
+            case CLOTHING:    return "lostNfound_clothing.jpg";
+            case ELECTRONICS: return "lostNfound_electronics.jpg";
+            case ATM_CARD:    return "lostNfound_atm_card.jpg";
+            case KEYS:        return "lostNfound_keys.jpg";
+            case MATERIALS:   return "lostNfound_materials.jpg";
+            default:          return "lostNfound.png";
+        }
+    }
 
-	public void setEntry(Item entry) {
-		this.entry = entry;
-	}
+    // ── Getters / Setters ──────────────────────────────────────────────────
 
-	public List<Category> getCategories() {
-		return categories;
-	}
+    public Item getEntry()                         { return entry; }
+    public void setEntry(Item e)                   { this.entry = e; }
+    public Media getEntryMedia()                   { return entryMedia; }
+    public void setEntryMedia(Media m)             { this.entryMedia = m; }
 
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
-	}
+    public Item getFoundEntry()                    { return foundEntry; }
+    public void setFoundEntry(Item e)              { this.foundEntry = e; }
+    public Item getLostEntry()                     { return lostEntry; }
+    public void setLostEntry(Item e)               { this.lostEntry = e; }
 
-	/**
-	 * @return the fileName
-	 */
-	public String getFileName() {
-		return fileName;
-	}
+    public LazyDataModel<Item> getLazyModelFound() { return lazyModelFound; }
+    public LazyDataModel<Item> getLazyModelLost()  { return lazyModelLost; }
+    public LazyDataModel<Item> getLazyModel()      { return lazyModelAll; }
+    public LazyDataModel<Item> getLazyModelAll()   { return lazyModelAll; }
 
-	/**
-	 * @param fileName the fileName to set
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public List<Item> getMyItems()                 { return myItems; }
 
-	/**
-	 * @return the fileExtension
-	 */
-	public String getFileExtension() {
-		return fileExtension;
-	}
+    public String getSearchTerm()                  { return searchTerm; }
+    public void setSearchTerm(String v)            { this.searchTerm = v; }
 
-	/**
-	 * @param fileExtension the fileExtension to set
-	 */
-	public void setFileExtension(String fileExtension) {
-		this.fileExtension = fileExtension;
-	}
+    public List<Category> getCategories()          { return categories; }
+    public void setCategories(List<Category> c)    { this.categories = c; }
 
-	/**
-	 * @return the previewPath
-	 */
-	public Path getPreviewPath() {
-		return previewPath;
-	}
-
-	/**
-	 * @param previewPath the previewPath to set
-	 */
-	public void setPreviewPath(Path previewPath) {
-		this.previewPath = previewPath;
-	}
-
-	public Media getEntryMedia() {
-		return entryMedia;
-	}
-
-	public void setEntryMedia(Media entMedia) {
-		this.entryMedia = entMedia;
-	}
-
-	/**
-	 * @return the lazyModel1
-	 */
-	public LazyDataModel<Item> getLazyModel1() {
-		return lazyModel1;
-	}
-
-	/**
-	 * @param lazyModel1 the lazyModel1 to set
-	 */
-	public void setLazyModel1(LazyDataModel<Item> lazyModel1) {
-		this.lazyModel1 = lazyModel1;
-	}
-
-	/**
-	 * @return the lazyModel2
-	 */
-	public LazyDataModel<Item> getLazyModel2() {
-		return lazyModel2;
-	}
-
-	/**
-	 * @param lazyModel2 the lazyModel2 to set
-	 */
-	public void setLazyModel2(LazyDataModel<Item> lazyModel2) {
-		this.lazyModel2 = lazyModel2;
-	}
-
+    // Needed for the file upload field binding
+    public UploadedFile getFoundFile()             { return foundFile; }
+    public void setFoundFile(UploadedFile f)       { this.foundFile = f; }
+    public UploadedFile getLostFile()              { return lostFile; }
+    public void setLostFile(UploadedFile f)        { this.lostFile = f; }
 }
